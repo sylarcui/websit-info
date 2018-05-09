@@ -1,0 +1,142 @@
+
+*,
+*:before,
+*:after {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  height: 100%;
+  width: 100%;
+  position: relative;
+}
+ul,
+li {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+body {
+  font-family: Helvetica Neue,Helvetica,PingFang SC,Hiragino Sans GB,Microsoft YaHei,SimSun,sans-serif;
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position:center;
+  position: relative;
+  letter-spacing: 0.5px;
+}
+
+button, input, optgroup, select, textarea{
+  font-family: PingFang SC,Helvetica Neue,Helvetica,Hiragino Sans GB,Microsoft YaHei,SimSun,sans-serif;
+}
+
+// @media screen and (min-width: 768px){
+//   html {
+//     font-size: 10px !important;
+//   }
+// }
+#app {
+  height: 100%;
+  width: 100%;
+  position: relative;
+  .el-main {
+    padding: 0;
+  }
+  .el-header {
+    padding: 0;
+  }
+}
+@media screen and (min-width: 960px){
+  html {
+    font-size: 16px !important;
+  }
+}
+
+@media screen and (max-height: 799px){
+  html {
+    font-size: 16px !important;
+  }
+}
+
+@media screen and (min-width: 1440px){
+  html {
+    font-size: 16px !important;
+  }
+}
+
+@media screen and (min-width: 1920px){
+  html {
+    font-size: 16px !important;
+  }
+}
+.clearfix::before,
+.clearfix::after{
+    content: "";
+    height: 0;
+    line-height: 0;
+    display: block;
+    visibility: hidden;
+    clear: both;
+}
+.clearfix:after{clear:both;}
+::-webkit-input-placeholder { /* Chrome/Opera/Safari */
+  color: #8282a6;
+  font-weight: 200;
+}
+::-moz-placeholder { /* Firefox 19+ */
+  color: #8282a6;
+  font-weight: 200;
+}
+:-ms-input-placeholder { /* IE 10+ */
+  color: #8282a6;
+  font-weight: 200;
+}
+:-moz-placeholder { /* Firefox 18- */
+  color: #8282a6;
+  font-weight: 200;
+}
+
+body .v--modal-overlay {
+  background: rgba(0,0,0,.5);
+  z-index: 1000;
+}
+
+span.el-tree-node__expand-icon.is-leaf {
+  display: none;
+}
+.self .summary .summary-content .summary-content-span a{
+  color: #fff;
+  text-decoration: none;
+  opacity: .8;
+}
+.el-message{
+  z-index:9999;
+}
+input:focus{
+  -webkit-tap-highlight-color:rgba(0,0,0,0);
+  -webkit-user-modify:read-write-plaintext-only;
+}
+.text-right{
+  text-align:right;
+}
+.text-left{
+  text-align: left;
+}
+.text-center{
+  text-align: center;
+}
+.float-r{
+  float: right;
+  display: block;
+}
+.float-l{
+  float: left;
+  display: block;
+}
+.hide{
+  display: none;
+}
+input:focus{
+  outline: none;
+}

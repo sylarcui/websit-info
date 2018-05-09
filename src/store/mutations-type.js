@@ -1,0 +1,91 @@
+// login
+export const SWITCH_LOGIN_TYPE = 'SWITCH_LOGIN_TYPE'
+export const SWITCH_NORMAL_MOBILE = 'SWITCH_NORMAL_MOBILE'
+// loading
+export const START_LOADING = 'START_LOADING'
+export const END_LOADING = 'END_LOADING'
+
+// user
+export const GET_ACCOUNT = 'GET_ACCOUNT'
+export const SET_USER = 'SET_USER'
+export const SET_TEAM_NUM = 'SET_TEAM_NUM'
+export const SET_FILE_TOTAL = 'SET_FILE_TOTAL'
+export const SET_FAVORITE_TOTAL = 'SET_FAVORITE_TOTAL'
+export const SET_UUID = 'SET_UUID'
+
+// team
+export const CREATE_TEAM = 'CREATE_TEAM'
+export const SET_TEAMS = 'SET_TEAMS'
+export const SET_TEAM_TAGS = 'SET_TEAM_TAGS'
+export const UPDATA_TEAM = 'UPDATA_TEAM'
+export const GET_TEAM = 'GET_TEAM'
+// room
+export const SET_ROOMS = 'SET_ROOMS'
+export const SET_MEMBERS = 'SET_MEMBERS'
+export const GET_ROOM = 'GET_ROOM'
+export const REMOVE_ROOM = 'REMOVE_ROOM'
+export const UPDATA_ROOM = 'UPDATA_ROOM'
+export const CREATE_ROOM = 'CREATE_ROOM'
+
+// file
+export const SET_MY_FILES = 'SET_MY_FILES'
+export const APPEND_MY_FILES = 'APPEND_MY_FILES'
+export const UNSHIFT_MY_FILES = 'UNSHIFT_MY_FILES'
+export const REMOVE_MY_FILES = 'REMOVE_MY_FILES'
+export const SET_MY_FOLDERS = 'SET_MY_FOLDERS'
+export const UNSHIFT_MY_FOLDERS = 'UNSHIFT_MY_FOLDERS'
+export const REMOVE_MY_FOLDERS = 'REMOVE_MY_FOLDERS'
+export const GET_FOLDER_BY_ID = 'GET_FOLDER_BY_ID'
+export const NEW_FOLDER = 'NEW_FOLDER'
+export const NEW_FOLDER_CANCEL = 'NEW_FOLDER_CANCEL'
+export const SET_FILE_DATA = 'SET_FILE_DATA'
+export const GET_MY_SPACE = 'GET_MY_SPACE'
+export const GET_TOTAL_SPACE = 'GET_TOTAL_SPACE'
+export const GET_SHENG_SPACE = 'GET_SHENG_SPACE'
+
+// contact
+export const CREATE_CONTACT = 'CREATE_CONTACT'
+export const SET_CONTACTS = 'SET_CONTACTS'
+
+// message
+export const SYNC_MESSAGE = 'SYNC_MESSAGE'
+export const SET_MESSAGE = 'SET_MESSAGE'
+export const UPDATE_MESSAGE = 'UPDATE_MESSAGE'
+export const REMOVE_MESSAGE = 'REMOVE_MESSAGE'
+export const REMOVE_MESSAGE_LIST = 'REMOVE_MESSAGE_LIST'
+export const CLEAR_MESSAGE = 'CLEAR_MESSAGE'
+export const SET_TRANSLATE_MESSAGE = 'SET_TRANSLATE_MESSAGE'
+export const UPDATE_TRANSLATE_MESSAGE = 'UPDATE_TRANSLATE_MESSAGE'
+export const SENDFILE = 'SENDFILE'
+
+// notification
+export const CREATE_NOTIFY = 'CREATE_NOTIFY'
+export const UPDATE_NOTIFY = 'UPDATE_NOTIFY'
+export const REMOVE_NOTIFY = 'REMOVE_NOTIFY'
+export const SET_NOTIFY = 'SET_NOTIFY'
+export const GROUP_NOTIFY = 'GROUP_NOTIFY'
+export const CLEAR_NOTIFY = 'CLEAR_NOTIFY'
+export const CREATE_HISTORY = 'CREATE_HISTORY'
+export const UPDATE_UNREADNUM = 'UPDATE_UNREADNUM'
+
+// show modal
+export const SHOW_MODAL = 'SHOW_MODAL'
+export const HIDE_MODAL = 'HIDE_MODAL'
+export const SHOW_MODAL_CONTACT = 'SHOW_MODAL_CONTACT'
+export const HIDE_MODAL_CONTACT = 'HIDE_MODAL_CONTACT'
+export const SHOW_MODAL_SIDEBAR = 'SHOW_MODAL_SIDEBAR'
+export const HIDE_MODAL_SIDEBAR = 'HIDE_MODAL_SIDEBAR'
+export const SHOW_MODAL_TEAM = 'SHOW_MODAL_TEAM'
+export const HIDE_MODAL_TEAN = 'HIDE_MODAL_TEAN'
+export const AT_STATUS = 'AT_STATUS'
+
+export const HIDE_MODAL_ADD = 'HIDE_MODAL_ADD'
+export const SHOW_MODAL_ADD = 'SHOW_MODAL_ADD'
+
+export const HIDE_MODAL_FILE = 'HIDE_MODAL_FILE'
+export const SHOW_MODAL_FILE = 'SHOW_MODAL_FILE'
+
+export const HIDE_MENUE = 'HIDE_MENUE'
+export const SHOW_MENUE = 'SHOW_MENUE'
+// ImgUrl
+export const BASE_IMGURL = 'BASE_IMGURL'

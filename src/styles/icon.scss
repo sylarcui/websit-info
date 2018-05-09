@@ -1,0 +1,56 @@
+@import "./fortawesome/scss/fontawesome.scss";
+@import "./fortawesome/scss/fa-regular.scss";
+@import "./fortawesome/scss/fa-solid.scss";
+@import "./fortawesome/scss/fa-brands.scss";
+@import "./fortawesome/scss/fa-light.scss";
+
+
+.user {
+  @include fa-icon;
+  @extend .fas;
+
+  &:before {
+    content: fa-content($fa-var-users);
+  }
+}
+
+.twitter {
+  @include fa-icon;
+  @extend .fab;
+
+  &:before {
+    content: fa-content($fa-var-twitter);
+  }
+}
+.book-fab {
+  @include fa-icon;
+  @extend .fab;
+
+  &:before {
+    content: fa-content($fa-var-address-book);
+  }
+}
+.book-fal {
+  @include fa-icon;
+  @extend .fal;
+
+  &:before {
+    content: fa-content($fa-var-address-book);
+  }
+}
+.book-far {
+  @include fa-icon;
+  @extend .far;
+
+  &:before {
+    content: fa-content($fa-var-address-book);
+  }
+}
+.book-fas {
+  @include fa-icon;
+  @extend .fas;
+
+  &:before {
+    content: fa-content($fa-var-address-book);
+  }
+}
