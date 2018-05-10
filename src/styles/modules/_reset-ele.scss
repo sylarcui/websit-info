@@ -256,4 +256,6 @@
 .el-carousel__item {
   transition: none;
 }
-
+.el-button--mini, .el-button--mini.is-round {
+  padding: 5px 5px;
+}

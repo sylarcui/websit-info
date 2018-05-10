@@ -7,6 +7,7 @@ import store from './store'
 import ElementUI from 'element-ui'
 import 'element-ui/lib/theme-chalk/index.css'
 import { sync } from 'vuex-router-sync'
+import VModal from 'vue-js-modal'
 import FontAwesomeIcon from '@fortawesome/vue-fontawesome'
 import fontawesome from '@fortawesome/fontawesome'
 import solid from '@fortawesome/fontawesome-pro-solid'
@@ -15,9 +16,10 @@ import light from '@fortawesome/fontawesome-pro-light'
 import brands from '@fortawesome/fontawesome-free-brands'
 
 fontawesome.library.add(brands, light, regular, solid)
-Vue.component('font-awesome-icon', FontAwesomeIcon)
+Vue.component('icon', FontAwesomeIcon)
 Vue.config.productionTip = false
 Vue.use(ElementUI)
+Vue.use(VModal)
 sync(store, router)
 /* eslint-disable no-new */
 new Vue({
