@@ -8,6 +8,7 @@
         <div>
           用户名：崔晋
         </div>
+        <div><el-button class="float-r" size="mini" @click="checkOut">退出</el-button></div>
         <img src="../../assets/avatar.jpg"  slot="reference"/>
       </el-popover>
     </div>
@@ -47,7 +48,16 @@
 
 <script>
 export default {
-  name: 'Sidebar'
+  name: 'Sidebar',
+  data () {
+    return {
+    }
+  },
+  methods: {
+    checkOut () {
+      this.$router.push({ name: 'login' })
+    }
+  }
 }
 </script>
 

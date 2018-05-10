@@ -8,6 +8,7 @@ import bpmn from '@/views/bpmn/'
 import message from '@/views/message/'
 import website from '@/views/website/'
 import webform from '@/views/webform/'
+import webformTemplate from '@/views/webform/webform-template'
 
 Vue.use(Router)
 
@@ -45,6 +46,11 @@ export default new Router({
           component: webform
         }
       ]
+    },
+    {
+      path: '/webform-template/:templateId',
+      name: 'webform-template',
+      component: webformTemplate
     },
     {
       path: '*',

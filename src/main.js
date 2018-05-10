@@ -15,6 +15,8 @@ import regular from '@fortawesome/fontawesome-pro-regular'
 import light from '@fortawesome/fontawesome-pro-light'
 import brands from '@fortawesome/fontawesome-free-brands'
 
+import './mock/mock'
+
 fontawesome.library.add(brands, light, regular, solid)
 Vue.component('icon', FontAwesomeIcon)
 Vue.config.productionTip = false

@@ -15,63 +15,15 @@
         </el-col>
       </el-row>
       <ul class="template-list">
-        <li class="template-item">
+        <li class="template-item" @click="createForm(-1)">
           <div class="template-item-img"></div>
           <span class="template-item-name">空白</span>
         </li>
-        <li class="template-item">
+        <li class="template-item" v-for="(data, key) in templateList" :key="key" @click="createForm(data.id)">
           <div class="template-item-img">
-            <img src="../../assets/images/webform-1.png">
+            <img :src="data.thumbnail_pic_s">
           </div>
-          <span class="template-item-name">落户申请</span>
-        </li>
-        <li class="template-item">
-          <div class="template-item-img">
-            <img src="../../assets/images/webform-1.png">
-          </div>
-          <span class="template-item-name">一卡通申请</span>
-        </li>
-        <li class="template-item">
-          <div class="template-item-img">
-            <img src="../../assets/images/webform-1.png">
-          </div>
-          <span class="template-item-name">入库审批</span>
-        </li>
-        <li class="template-item">
-          <div class="template-item-img">
-            <img src="../../assets/images/webform-1.png">
-          </div>
-          <span class="template-item-name">请假审批</span>
-        </li>
-        <li class="template-item">
-          <div class="template-item-img">
-            <img src="../../assets/images/webform-1.png">
-          </div>
-          <span class="template-item-name">多胎申请</span>
-        </li>
-        <li class="template-item">
-          <div class="template-item-img">
-            <img src="../../assets/images/webform-1.png">
-          </div>
-          <span class="template-item-name">住房公积金贷款申请</span>
-        </li>
-        <li class="template-item">
-          <div class="template-item-img">
-            <img src="../../assets/images/webform-1.png">
-          </div>
-          <span class="template-item-name">迁入单位集体户</span>
-        </li>
-        <li class="template-item">
-          <div class="template-item-img">
-            <img src="../../assets/images/webform-1.png">
-          </div>
-          <span class="template-item-name">被人民法院宣告失踪注销户口</span>
-        </li>
-        <li class="template-item">
-          <div class="template-item-img">
-            <img src="../../assets/images/webform-1.png">
-          </div>
-          <span class="template-item-name">出具纳税证明</span>
+          <span class="template-item-name">{{data.title}}</span>
         </li>
       </ul>
       <el-row class="header">
@@ -80,37 +32,37 @@
       <ul class="template-list">
         <li class="template-item">
           <div class="template-item-img">
-            <img src="../../assets/images/webform-1.png">
+            <img src="../../../static/webform-1.png">
           </div>
           <span class="template-item-name">落户申请</span>
         </li>
         <li class="template-item">
           <div class="template-item-img">
-            <img src="../../assets/images/webform-1.png">
+            <img src="../../../static/webform-1.png">
           </div>
           <span class="template-item-name">一卡通申请</span>
         </li>
         <li class="template-item">
           <div class="template-item-img">
-            <img src="../../assets/images/webform-1.png">
+            <img src="../../../static/webform-1.png">
           </div>
           <span class="template-item-name">入库审批</span>
         </li>
         <li class="template-item">
           <div class="template-item-img">
-            <img src="../../assets/images/webform-1.png">
+            <img src="../../../static/webform-1.png">
           </div>
           <span class="template-item-name">请假审批</span>
         </li>
         <li class="template-item">
           <div class="template-item-img">
-            <img src="../../assets/images/webform-1.png">
+            <img src="../../../static/webform-1.png">
           </div>
           <span class="template-item-name">多胎申请</span>
         </li>
         <li class="template-item">
           <div class="template-item-img">
-            <img src="../../assets/images/webform-1.png">
+            <img src="../../../static/webform-1.png">
           </div>
           <span class="template-item-name">住房公积金贷款申请</span>
         </li>
@@ -120,11 +72,23 @@
 </template>
 
 <script>
+import api from '@/api'
 export default {
   name: 'index',
   data () {
     return {
-      templateSearch: ''
+      templateSearch: '',
+      templateList: ''
+    }
+  },
+  async created () {
+    let templateList = await api.template.list()
+    this.templateList = templateList.data.articles
+    console.log(this.templateList)
+  },
+  methods: {
+    createForm (id) {
+      this.$router.push({path: `webform-template/${id}`})
     }
   }
 }

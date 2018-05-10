@@ -28,11 +28,13 @@
     padding-right: rem(55);
   }
 }
-
+.el-button--mini, .el-button--small {
+  border-radius: 2px;
+}
 .el-input__inner,
 .el-textarea__inner {
-  background-color: $light-gray;
-  border-color: $gray;
+  background-color: $white;
+  border-radius: 2px;
   &:focus {
     border-color: #078bf4;
   }

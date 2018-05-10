@@ -3,7 +3,7 @@ import axios from 'axios'
 // import store from './store'
 // axios.defaults.timeout = httpConfig.TIMEOUT
 
-axios.defaults.baseURL = '/api'
+axios.defaults.baseURL = '/mock/'
 // axios.interceptors.request.use(
 //   config => {
 //     config.headers = {

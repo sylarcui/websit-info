@@ -1,5 +1,5 @@
 function getUrl (url) {
-  return `/v3/${url}`
+  return `/v1/${url}`
 }
 
 export { getUrl }
