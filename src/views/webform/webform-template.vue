@@ -218,7 +218,7 @@
     <el-container>
       <el-main class="webform-main">
         <div class="page-preview">
-          sss
+          <tableView></tableView>
         </div>
       </el-main>
       <el-aside width="220px"  class="webform-aside">
@@ -237,6 +237,7 @@
 
 <script>
 import widget from '@/components/webform/webform-widget'
+import tableView from '@/components/webform/table-views'
 export default {
   name: 'webformTemplate',
   data () {
@@ -253,6 +254,9 @@ export default {
     selectWidget (widgetType) {
       console.log(widgetType)
     }
+  },
+  components: {
+    tableView
   }
 }
 </script>
@@ -398,7 +402,6 @@ export default {
         background-color: #F2F2F2;
         height: rem(36);
         font-size: 12px;
-        background-color: #f7f7f7;
         text-align: center;
         padding: 8px 0;
         padding-right: rem(220);
@@ -410,7 +413,7 @@ export default {
           cursor: pointer;
           height: 20px;
           color: #5f6265;
-          font-size: 12px;
+          font-size: 14px;
           padding:0 5px;
           line-height: 20px;
           &:hover {
