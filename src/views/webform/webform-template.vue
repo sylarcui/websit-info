@@ -221,42 +221,53 @@
           <tableView></tableView>
         </div>
       </el-main>
-      <el-aside width="220px"  class="webform-aside">
-        <el-tabs v-model="webformAside" type="card">
-          <el-tab-pane name="first">
-            <span slot="label"><icon :icon="['fal','wrench']"></icon> 控件属性</span> 控件属性
-          </el-tab-pane>
-          <el-tab-pane name="second">
-            <span slot="label"><icon :icon="['fal','tasks']"></icon> 控件列表</span>配置管理
-          </el-tab-pane>
-        </el-tabs>
-      </el-aside>
+      <webformSidebar :currentView="currentView"></webformSidebar>
     </el-container>
   </el-container>
 </template>
 
 <script>
+import {mapMutations, mapGetters} from 'vuex'
 import widget from '@/components/webform/webform-widget'
 import tableView from '@/components/webform/table-views'
+import webformSidebar from './webform-sidebar'
 export default {
   name: 'webformTemplate',
   data () {
     return {
       formName: '',
       webformAside: 'first',
-      widgetLists: []
+      widgetLists: [],
+      currentView: ''
     }
   },
   created () {
     this.widgetLists = widget
+    console.log(tableView)
   },
   methods: {
     selectWidget (widgetType) {
       console.log(widgetType)
-    }
+      this.currentView = widgetType
+      this.tdAddWidgets()
+      if (this.tdWidgets[widgetType]) {
+        this.currentElList[0].innerHTML = this.tdWidgets[widgetType].outerHTML
+      }
+      console.log(this.tdWidgets[widgetType])
+    },
+    ...mapMutations([
+      'tdAddWidgets'
+    ])
   },
   components: {
-    tableView
+    tableView,
+    webformSidebar
+  },
+  computed: {
+    ...mapGetters([
+      'tdWidgets',
+      'currentElList'
+    ])
   }
 }
 </script>
@@ -300,43 +311,7 @@ export default {
         }
       }
     }
-    .webform-aside {
-      overflow: initial;
-      .el-tabs {
-        height: 100%;
-        margin-top: rem(-35);
-      }
-      .el-tabs__content {
-        height: calc(100% - 2.25rem);
-        background-color: white;
-        border-left: 1px solid #d1d1d1;
-      }
-      .el-tabs__header {
-        margin-bottom: 0;
-        height: rem(35);
-        background-color: #ffffff;
-        border-bottom: 1px solid #d1d1d1;
-        .el-tabs__item {
-          padding: 0 rem(5);
-          height: rem(35);
-          line-height: rem(35);
-          font-size: rem(12);
-          width: rem(109);
-          text-align: center;
-          color: #323232;
-          border-left: 1px solid #d1d1d1;
-          &.is-active {
-            background-color: #f7f7f7;
-            color: $default--color;
-            border-bottom: 1px solid #d1d1d1;
-          }
-        }
-        .el-tabs__nav {
-          z-index: 0;
-          border: none;
-        }
-      }
-    }
+
     .header-top {
       .el-input {
         width: rem(200);
@@ -451,10 +426,6 @@ export default {
         }
       }
     }
-    .webform-aside {
-      position: relative;
-      z-index: 1;
-    }
     .webform-main {
       position: relative;
       z-index: 0;
@@ -492,7 +463,7 @@ export default {
     }
     .page-preview {
       width: rem(800);
-      height: rem(1000);
+      min-height: rem(1000);
       background-color: white;
       margin: rem(20) auto;
       box-shadow: 0 0px 10px 0 rgba(0, 0, 0, 0.12), 0 0 10px 0 rgba(0, 0, 0, 0.04);

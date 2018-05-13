@@ -96,11 +96,13 @@ TABLE.table = (function () {
       td = getParentCell(evt.target || evt.srcElement),
       mouseButton,
       empty;
+    console.log([event.target])
+    var target = e.target.offsetParent || e.target.offsetParent.offsetParent
     if (!td && !e.shiftKey) {
       return;
     }
     if (td && !e.shiftKey) {
-      var cl = cell_list(e.target.offsetParent)
+      var cl = cell_list(target)
       for(var i in cl) {
         cl[i].redips = {}
         cl[i].className = ''

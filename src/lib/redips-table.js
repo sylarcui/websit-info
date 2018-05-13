@@ -1,7 +1,7 @@
 /* eslint-disable */
 /* enable strict mode */
 "use strict";
-
+import store from '../store/'
 // create REDIPS namespace (if is not already defined in another REDIPS package)
 var TABLE = TABLE || {};
 
@@ -342,6 +342,8 @@ TABLE.table = (function () {
 				relocate(c, fc);
 				// delete cell
 				c.parentNode.deleteCell(c.cellIndex);
+				store.commit('mergeTable', c)
+				console.log(c[0])
 			}
 		}
 		// if cell exists
@@ -349,10 +351,13 @@ TABLE.table = (function () {
 			// vertical merging
 			if (mode === 'v') {
 				fc.rowSpan += span;			// set new rowspan value
+        store.commit('updataSpan', {data: fc, span: 'rowSpan'})
+        // console.log(fc, 'pppppp')
 			}
 			// horizontal merging
 			else {
 				fc.colSpan += span;			// set new rowspan value
+        store.commit('updataSpan', {data: fc, span: 'colSpan'})
 			}
 			// if clear flag is set to true (or undefined) then set original background color and reset selected flag
 			if (clear === true || clear === undefined) {
@@ -440,6 +445,7 @@ TABLE.table = (function () {
 		// loop TABLE
 		for (t = 0; t < tbl.length; t++) {
 			// define cell list with new coordinates
+      cell_index();
 			cl = cell_list(tbl[t]);
 			// define maximum number of columns in table
 			max = max_cols(tbl[t]);
@@ -464,11 +470,21 @@ TABLE.table = (function () {
 							// get rowspaned cells before current cell (in a row)
 							rs = get_rowspan(c, i, j);
 							// insert new cell at last position of rowspan (consider rowspan cells before)
-							n = tr[i + c.rowSpan - 1].insertCell(j - rs);
+              store.commit('splitTable',{i: i + c.rowSpan - 1, j: j - rs})
+							// n = tr[i + c.rowSpan - 1].insertCell(j - rs);
+              cl = [], tbl = {}
+              tbl = (table === undefined) ? tables : get_table(table);
+              cell_index();
+              cl = cell_list(tbl[t]);
+              tr = tbl[t].rows;
+              n = cl[i + c.rowSpan - 1 + '-' + j - rs];
+							console.log(n, i + c.rowSpan - 1, j - rs, c, '00000')
 							// set the same colspan value as it has current cell
-							n.colSpan = c.colSpan;
+              n.colSpan = c.colSpan;
 							// decrease rowspan of marked cell
+              // store.commit('splitTable',{i: i + c.rowSpan - 1, j: j - rs})
 							c.rowSpan -= 1;
+              store.commit('updataSpan', {data: c, span: 'rowSpan'})
 							// add "redips" property to the table cell and optionally event listener
 							cell_init(n);
 							// recreate cell list after vertical split (new cell is inserted)
@@ -478,22 +494,39 @@ TABLE.table = (function () {
 					// split horizontally
 					else {
 						// define current table cell
+            cl = [], tbl = {}
+            // debugger
+            tbl = (table === undefined) ? tables : get_table(table);
+            cell_index();
+            cl = cell_list(tbl[t]);
+            tr = tbl[t].rows;
+            console.log(tr, i, j, '-00000000')
 						c = tr[i].cells[j];
+						console.log(tr, tr[i], cl, tbl[t])
 						// if custom property "redips" doesn't exist then create custom property
 						c.redips = c.redips || {};
+						// c.setAttribute(redips)
 						// if marked cell is found and cell has colspan property greater then 1
-						if (c.redips.selected === true && c.colSpan > 1) {
-							// increase cols (because new cell is inserted)
-							cols++;
-							// insert cell after current cell
-							n = tr[i].insertCell(j + 1);
-							// set the same rowspan value as it has current cell
-							n.rowSpan = c.rowSpan;
-							// decrease colspan of marked cell
-							c.colSpan -= 1;
-							// add "redips" property to the table cell and optionally event listener
-							cell_init(n);
-						}
+            if (c.redips.selected === true && c.colSpan > 1) {
+              // increase cols (because new cell is inserted)
+              cols++;
+              // insert cell after current cell
+              n = tr[i].insertCell(j + 1);
+              // store.commit('splitTable',{i: i, j: j + 1})
+              cell_index();
+              cl = [], tbl = {}
+              tbl = (table === undefined) ? tables : get_table(table);
+              cl = cell_list(tbl[t]);
+              tr = tbl[t].rows;
+              n = cl[i + '-' + j + 1];
+              // set the same rowspan value as it has current cell
+              if (n) n.rowSpan = c.rowSpan;
+              // decrease colspan of marked cell
+              c.colSpan -= 1;
+              store.commit('updataSpan', {data: c, span: 'colSpan'})
+              // add "redips" property to the table cell and optionally event listener
+              if (n) cell_init(n);
+            }
 					}
 					// return original background color and reset selected flag (if cell exists)
 					if (c !== undefined) {
@@ -504,6 +537,7 @@ TABLE.table = (function () {
 		}
 		// show cell index (if show_index public property is set to true)
 		cell_index();
+    store.commit('splitTable',tbl)
 	};
 
 
@@ -920,9 +954,11 @@ TABLE.table = (function () {
 						// set innerHTML with cellIndex property
 						// c.innerHTML = (show_index) ? i + '-' + j : '';
             c.setAttribute('id', i + '-' + j)
+
 					}
 				}
 			}
+			console.log(store)
 		}
 	};
 

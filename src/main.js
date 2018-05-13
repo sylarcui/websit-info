@@ -17,7 +17,7 @@ import brands from '@fortawesome/fontawesome-free-brands'
 
 import './mock/mock'
 
-import TABLE from './lib/redips-table'
+import TABLE from './lib/table'
 Vue.prototype.TABLE = TABLE
 
 fontawesome.library.add(brands, light, regular, solid)
