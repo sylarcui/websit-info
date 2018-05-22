@@ -1,24 +1,18 @@
 <template>
-  <div class="table-views">
     <div class="contactTable">
       <table width="100%" contenteditable="true">
         <tbody>
         <tr v-for="(v, i) in tdData" :key="i">
           <td v-for="(m, j) in v" :key="j" :y="j">
-            <div>sss</div>
           </td>
         </tr>
         </tbody>
       </table>
     </div>
-  </div>
 </template>
 
 <script>
 import {mapActions, mapGetters} from 'vuex'
-// import * as widgetsl from '@/components/webform/widgets'
-import _ from 'lodash'
-// import Vue from 'vue'
 export default {
   name: 'table-views',
   created () {
@@ -26,133 +20,15 @@ export default {
   },
   data () {
     return {
-      tableEvent: {},
-      tableEl: '',
-      position: ''
     }
-  },
-  directives: {
-    uptable: {
-      // 指令的定义
-      inserted: (el) => {
-        console.log(el, ',----')
-      },
-      update: (el) => {
-        console.log(el, 'hhhhh')
-      },
-      componentUpdated: (el) => {
-        console.log(el, '-0-0-0')
-      }
-    }
-  },
-  mounted: function () {
-    this.$nextTick(() => {
-      this.tableEl = this.$refs.contactTable
-      console.log(this.$refs.currentViewPan)
-      this.tableEvent.init = () => {
-        var rt = this.TABLE.table
-        rt.onmousedown('mainTable', true)
-        rt.cell_index(true)
-        rt.color.cell = this.cellColor
-      }
-      this.tableEvent.merge = () => {
-        this.TABLE.table.merge('h', false)
-        this.TABLE.table.merge('v')
-      }
-      this.tableEvent.split = (mode) => {
-        this.TABLE.table.split(mode)
-      }
-      this.tableEvent.row = (type, position) => {
-        console.log(this.currentElList)
-        let _minEl = _.minBy(this.currentElList, (o) => { return o.parentNode.rowIndex })
-        let _position = _minEl ? _minEl.parentNode.rowIndex : ''
-        switch (position) {
-          case 'start':
-            _position = 0
-            break
-          case 'end':
-            _position = -1
-            break
-          case 'top':
-            if (type === 'delete') {
-              _position = _minEl ? _position + _minEl.rowSpan : 0
-            } else {
-              _position = _minEl ? _position + _minEl.rowSpan : 0
-            }
-            // _position = _minEl ? _position : 0
-            break
-          case 'bottom':
-            if (type === 'delete') {
-              _position = _minEl ? _position + _minEl.rowSpan : 0
-            } else {
-              _position = _minEl ? _position + _minEl.rowSpan : 0
-            }
-            // _position = _minEl ? _position : -1
-            break
-          default:
-            _position = ''
-        }
-        this.TABLE.table.row('mainTable', type, _position, position)
-      }
-
-      this.tableEvent.column = (type, position) => {
-        console.log(this.currentElList)
-        let _minEl = _.minBy(this.currentElList, (o) => { return o.cellIndex })
-        console.log(_minEl)
-        let _position = _minEl ? _minEl.cellIndex : ''
-        switch (position) {
-          case 'start':
-            _position = 0
-            break
-          case 'end':
-            _position = -1
-            break
-          case 'left':
-            if (type === 'delete') {
-              _position = _minEl ? _position - 1 : 0
-            } else {
-              _position = _minEl ? _position : 0
-            }
-
-            break
-          case 'right':
-            _position = _minEl ? _position + 1 : -1
-            break
-          default:
-            _position = ''
-        }
-        console.log(_position)
-        this.TABLE.table.column('mainTable', type, _position)
-      }
-      this.tableEvent.init()
-      // if (window.addEventListener) {
-      //   window.addEventListener('load', this.tableEvent.init, false)
-      // } else if (window.attachEvent) {
-      //   window.attachEvent('onload', this.tableEvent.init)
-      // }
-    })
   },
   computed: {
     ...mapGetters([
-      'tdData',
-      'rowData',
-      'colData',
-      'currentElList',
-      'widgets'
-    ]),
-    currentView () {
-      if (this.currentElList[0]) {
-        return this.widgets[this.$refs.componentss.parentNode.getAttribute('UUID')]
-      } else {
-        return ''
-      }
-    }
+      'tdData'
+    ])
   },
   // components: widgetsl,
   methods: {
-    clicktd (e) {
-      console.log(e)
-    },
     ...mapActions([
       'initTdData'
     ])
@@ -166,7 +42,7 @@ export default {
   }
   .table-views {
     outline: none;
-    padding: rem(20);
+    /*padding: rem(20);*/
   }
   .page-title {
     border-bottom: 2px solid #dddddd;
@@ -177,6 +53,9 @@ export default {
     margin-bottom: 30px;
     outline: none;
     height: 50px;
+    padding: rem(10);
+    color: #666666;
+    font-size: rem(20);
   }
   .page-title:empty:before{
     content:attr(placeholder);
@@ -188,8 +67,16 @@ export default {
     content:none;
   }
   .contactTable {
-    padding: 20px;
-    position: relative;
+    table {
+      tr {
+        td {
+          height: rem(30);
+          border: 1px solid #efefef;
+        }
+      }
+    }
+    /*padding: 20px;*/
+    /*position: relative;*/
   }
   /* container */
   #myContainer {

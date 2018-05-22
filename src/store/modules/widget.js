@@ -40,7 +40,7 @@ const widgets = {
       }
     },
     updataTdWidgetData ({commit, state, getters, rootState}, {val, newWidget}) {
-      let tdid = val.getAttribute('UUID')
+      let tdid = val ? val.getAttribute('UUID') : ''
       if (getters.getTdWidget(tdid)) {
         for (let i in newWidget.$data) {
           newWidget[i] = getters.getTdWidget(tdid).data[i]

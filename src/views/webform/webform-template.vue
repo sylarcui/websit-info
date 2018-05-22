@@ -219,6 +219,9 @@
       <el-main class="webform-main">
         <div class="page-preview">
           <froala :tag="'div'" ref="froala" :config="config"><tableView ref="tableView"></tableView></froala>
+          <!--<froala :onManualControllerReady="initialize" :config="config" v-model="model">Check out the <a href="https://www.froala.com/wysiwyg-editor">Froala Editor</a>-->
+
+          <!--</froala>-->
         </div>
       </el-main>
       <webformSidebar ref="webformSidebar"></webformSidebar>
@@ -244,54 +247,63 @@ export default {
       currentView: '',
       widgetKey: '',
       widgetName: '',
-      editor: {},
+      editor: null,
+      // getsed: null,
       config: {
         events: {
           'froalaEditor.initialized': (e, editor) => {
-            console.log('initialized', this, e, editor)
             this.editor = editor
-            // this.$refs.froala.$el.childNodes[0].removeChild(this.$refs.froala.$el.childNodes[0].firstChild)
-            // console.log(this.$refs.froala.$el.childNodes[0].removeChild(this.$refs.froala.$el.childNodes[0].firstChild))
-          },
-          'html.getSelected': function (e, editor) {
-            console.log(e, editor)
-            // editor.events.bindClick($('body'), '#release', function () {
-            //   var fs = editor.html.get()
-            //   $("#msgForm").submit()
-            //   editor.events.focus()
-            // });
           },
           // 添加事件，在每次按键按下时，都记录一下最后停留位置
-          'froalaEditor.keyup': (e, editor) => {
-            console.log(e, editor)
-            this.lastEditRange = getSelection().getRangeAt(0)
+          'froalaEditor.commands.before': (e, editor, html, ee) => {
+            console.log(e,editor, editor.core.isEmpty(), editor.selection.inEditor(), html, ee)
+            if (!editor.selection.inEditor()) {
+              return false
+            }
           },
           // 添加事件，在每次鼠标点击时，都记录一下最后停留位置
           'froalaEditor.mousedown': (e, editor, html) => {
-            console.log(e, editor, html.target)
+            // console.log(e, editor, html.target)
             $('.contactTable').find('.content-sed').removeClass('content-sed')
+            this.setCurrenttd('')
           },
           'froalaEditor.mouseup': (e, editor, html) => {
-            console.log(e, html, $(html.target).parents('td').length, html.target.nodeName === 'TD')
+            // console.log(e, html, $(html.target).parents('td').length, html.target.nodeName === 'TD')
             if ($(html.target).parents('td').length) {
-              console.log('222', this.setCurrenttd)
+              // console.log('222', this.setCurrenttd)
               $(html.target).parents('td').addClass('content-sed')
               this.setCurrenttd($(html.target).parents('td')[0])
             } else if (html.target.nodeName === 'TD') {
-              console.log('11')
+              // console.log('11')
               this.setCurrenttd(html.target)
               $(html.target).addClass('content-sed')
             }
           }
         },
         language: 'zh_cn',
+        charCounterCount: false,
+        disableRightClick: true,
+        enter: $.FroalaEditor.ENTER_BR,
+        htmlAllowComments: true,
+        // tableResizer: false,
+        pastePlain: true,
+        tableCellStyles: {
+          class1: 'Class 1',
+          class2: 'Class 2',
+          class3: 'Class 3'
+        },
+        tableStyles: {
+          class1: 'Class 1',
+          class2: 'Class 2',
+          class3: 'Class 3'
+        },
         // toolbarInline: true,
         // toolbarSticky: false,
-        toolbarButtons: ['bold', 'italic', 'underline', 'strikeThrough', 'subscript', 'superscript', '|', 'fontFamily', 'fontSize', 'color', 'inlineStyle', 'paragraphStyle', '|', 'paragraphFormat', 'align', 'formatOL', 'formatUL', 'outdent', 'indent', 'insertLink', 'insertImage', 'insertFile', 'insertTable', '|', 'specialCharacters', 'insertHR', 'selectAll', 'clearFormatting', '|', 'print', 'help', '|', 'undo', 'redo'],
-        // tableEditButtons: ['tableRows', 'tableColumns', 'tableCells', 'tableCellVerticalAlign', 'tableHeader'],
+        toolbarButtons: ['check', 'bold', 'italic', 'underline', 'strikeThrough', 'subscript', 'superscript', '|', 'fontFamily', 'fontSize', 'color', 'inlineStyle', 'paragraphStyle', '|', 'paragraphFormat', 'align', 'formatOL', 'formatUL', 'outdent', 'indent', 'insertLink', 'insertImage', 'insertFile', 'insertTable', '|', 'specialCharacters', 'insertHR', 'selectAll', 'clearFormatting', '|', 'print', 'help', '|', 'undo', 'redo'],
+        tableEditButtons: ['tableHeader', 'check', '|', 'tableRows', 'tableColumns', 'tableStyle', '-', 'tableCells', 'tableCellBackground', 'tableCellVerticalAlign', 'tableCellHorizontalAlign', 'tableCellStyle'],
         // tableInsertButtons: ['tableBack', 'tableRows', 'tableColumns', 'tableCells', 'tableCellVerticalAlign', 'tableHeader'],
-        toolbarContainer: '#toolbarContainer',
-        tableColors: ['#61BD6D', '#1ABC9C', '#54ACD2', 'REMOVE']
+        toolbarContainer: '#toolbarContainer'
+        // tableColors: ['#61BD6D', '#1ABC9C', '#54ACD2', 'REMOVE']
         // tableColorsButtons: ['tableBack']
       },
       model: 'Edit Your Content Here!'
@@ -299,16 +311,40 @@ export default {
   },
   created () {
     this.widgetLists = widgetLists
-    console.log(this.currentElList)
+    console.log($.FroalaEditor.DefineIcon('check', { NAME: 'check-square' }))
+    $.FroalaEditor.DefineIcon('check', { NAME: 'check-square' })
+    $.FroalaEditor.RegisterCommand('check', {
+      title: 'check-box',
+      focus: true,
+      undo: true,
+      refreshAfterCallback: false,
+      callback: () => {
+        let froala = document.querySelector('.contactTable')
+        let titleDiv = document.createElement('div')
+        titleDiv.contentEditable = true
+        titleDiv.setAttribute('placeholder', '输入标题')
+        titleDiv.className = 'page-title'
+        let fistNode = froala.firstChild
+        froala.insertBefore(titleDiv, fistNode)
+        console.log(froala)
+      }
+    })
+    // this.getsed = () => {
+    //   // this.initControls.html.set('')
+    //   // console.log(this.editor)
+    //   // this.initControls.getEditor()('undo.reset')
+    //   // this.initControls.getEditor()('undo.saveStep')
+    // }
   },
   mounted: function () {
     this.$nextTick(() => {
-
+      // console.log($.FroalaEditor.DefineIcon('check', { NAME: 'check-square' }))
     })
   },
   methods: {
     getsed () {
-      console.log(this.editor)
+      // this.editor.html.set('')
+      // this.editor.html.getSelected()
     },
     selectWidget (widgetType) {
       this.widgetName = widgetType
@@ -340,10 +376,12 @@ export default {
     'currenttd': {
       handler: function (val, oldval) {
         console.log(val)
-        if (val && this.getTdWidget(val.getAttribute('UUID'))) {
-          this.$refs.webformSidebar.$emit('insertWidgetCtrl', this.getTdWidget(val.getAttribute('UUID')).CtrlWidget, this.widgetKey)
-        } else {
-          this.$refs.webformSidebar.$emit('insertWidgetCtrl', '', this.widgetKey)
+        if (val) {
+          if (val && this.getTdWidget(val.getAttribute('UUID'))) {
+            this.$refs.webformSidebar.$emit('insertWidgetCtrl', this.getTdWidget(val.getAttribute('UUID')).CtrlWidget, this.widgetKey)
+          } else {
+            this.$refs.webformSidebar.$emit('insertWidgetCtrl', '', this.widgetKey)
+          }
         }
       },
       deep: true // 对象内部的属性监听，也叫深度监听
@@ -372,6 +410,9 @@ export default {
       position: absolute !important;
       top: -1000px;
     }
+  }
+  .fr-box.fr-basic .fr-element {
+    padding: rem(30);
   }
   .webform-wrapper {
     .webform-header {
