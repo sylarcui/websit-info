@@ -18,7 +18,7 @@
       <el-tabs type="card" class="header-tab">
         <el-tab-pane v-for="(data, index) in widgetLists" :key="index">
           <span slot="label"><i :class="data.icon"></i> {{data.group}}</span>
-          <ul class="controls-list clearfix">
+          <ul class="controls-list clearfix" :class="{ disabled: !currenttd }">{{!currenttd}}
             <li class="controls" v-for="(item, key) in data.groupList" :key="key" @click.prevent.stop="selectWidget(item.widgetType)" :title="item.name">
               <div class="controls-con">
                 <span class="controls-icon"><icon :icon="item.icon" class="controls-icon-style" fixed-width></icon></span>
@@ -256,7 +256,7 @@ export default {
           },
           // 添加事件，在每次按键按下时，都记录一下最后停留位置
           'froalaEditor.commands.before': (e, editor, html) => {
-            console.log(e, editor, editor.core.isEmpty(), editor.selection.inEditor(), html, this.currenttd)
+            console.log(e, editor, editor.core.isEmpty(), editor.selection.inEditor(), html, !this.currenttd)
             if (this.currenttd) {
               editor.selection.setAtEnd(this.currenttd)
             } else if (!editor.selection.inEditor() && !this.currenttd) {
@@ -629,6 +629,15 @@ export default {
           cursor: pointer;
           &:hover {
             background-color: rgba(0,0,0,0.1);
+          }
+        }
+      }
+      &.disabled {
+        opacity: 0.5;
+        .controls-con {
+          cursor: not-allowed;
+          &:hover {
+            background-color: transparent;
           }
         }
       }
