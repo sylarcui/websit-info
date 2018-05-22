@@ -17,7 +17,8 @@ import brands from '@fortawesome/fontawesome-free-brands'
 import TABLE from './lib/table'
 import './mock/mock'
 // Require Froala Editor js file.
-import 'froala-editor/js/froala_editor.pkgd.min'
+// import 'froala-editor/js/froala_editor.pkgd.min'
+import './lib/froala_editor.pkgd.min'
 // import 'froala-editor/js/plugins/table.min.js'
 import 'froala-editor/js/languages/zh_cn'
 // Require Froala Editor css files.

@@ -255,9 +255,11 @@ export default {
             this.editor = editor
           },
           // 添加事件，在每次按键按下时，都记录一下最后停留位置
-          'froalaEditor.commands.before': (e, editor, html, ee) => {
-            console.log(e,editor, editor.core.isEmpty(), editor.selection.inEditor(), html, ee)
-            if (!editor.selection.inEditor()) {
+          'froalaEditor.commands.before': (e, editor, html) => {
+            console.log(e, editor, editor.core.isEmpty(), editor.selection.inEditor(), html, this.currenttd)
+            if (this.currenttd) {
+              editor.selection.setAtEnd(this.currenttd)
+            } else if (!editor.selection.inEditor() && !this.currenttd) {
               return false
             }
           },
