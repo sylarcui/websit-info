@@ -2,6 +2,28 @@
 /* enable strict mode */
 "use strict";
 import store from '../store/'
+import UUID from 'uuidjs'
+import $ from 'jquery'
+import _ from 'lodash'
+// import * as widgetsl from '@/components/webform/widgets'
+// var Profile = Vue.extend({
+//   template: '<div ref="componentss"><component v-bind:is="currentView"></component></div>',
+//   components: widgetsl,
+//   props: ['widgetNmae'],
+//   data: function () {
+//     return {
+//     }
+//   },
+//   created () {
+//   },
+//   computed: {
+//     currentView () {
+//       return store.getters.widgets[this.$refs.componentss]
+//     }
+//   }
+// })
+// 创建 Profile 实例，并挂载到一个元素上。
+// new Profile().$mount('#mount-point')
 // 创建TABLE名称空间
 var TABLE = TABLE || {};
 TABLE.table = (function () {
@@ -96,8 +118,7 @@ TABLE.table = (function () {
       td = getParentCell(evt.target || evt.srcElement),
       mouseButton,
       empty;
-    console.log([event.target])
-    var target = e.target.offsetParent || e.target.offsetParent.offsetParent
+    var target = td.offsetParent || e.target.offsetParent.offsetParent
     if (!td && !e.shiftKey) {
       return;
     }
@@ -105,6 +126,7 @@ TABLE.table = (function () {
       var cl = cell_list(target)
       for(var i in cl) {
         cl[i].redips = {}
+        if (cl[i].redips.selected) cl[i].redips.selected = false
         cl[i].className = ''
       }
       td.redips.selected = true
@@ -142,7 +164,8 @@ TABLE.table = (function () {
     if (node.nodeName == 'TD' || node.nodeName == 'TH') {
       return node;
     }
-    return getParentCell(node.parentNode);
+    // return getParentCell(node.parentNode);
+    return getParentCell($(node).parents('td')[0]);
   }
 
   merge = function (mode, clear, table) {
@@ -193,7 +216,7 @@ TABLE.table = (function () {
     cell_index(true);
   };
   merge_cells = function (cl, idx, pos1, pos2, mode, clear) {
-    var tdData = store.getters.tdData
+    // var tdData = store.getters.tdData
     var span = 0, id,	fc,	c, i;
     fc = (mode === 'v') ? cl[pos1 + '-' + idx] : cl[idx + '-' + pos1];
     for (i = pos1 + 1; i < pos2; i++) {
@@ -201,10 +224,11 @@ TABLE.table = (function () {
       if (cl[id]) {
         c = cl[id];
         span += (mode === 'v') ? c.rowSpan : c.colSpan;
-        relocate(c, fc);
+        // relocate(c, fc);
+        store.dispatch('upDataTdData', c.getAttribute('UUID'))
+        store.commit('clearCurrent')
+        fc.className = ''
         c.parentNode.deleteCell(c.cellIndex);
-        // c.getAttribute('')
-        // store.commit('updataCellData', {i, j})
       }
     }
     if (fc !== undefined) {
@@ -272,6 +296,7 @@ TABLE.table = (function () {
             if (c !== undefined && c.redips.selected === true && c.rowSpan > 1) {
               rs = get_rowspan(c, i, j);
               n = tr[i + c.rowSpan - 1].insertCell(j - rs);
+
               n.colSpan = c.colSpan;
               c.rowSpan -= 1;
               cell_init(n);
@@ -290,12 +315,21 @@ TABLE.table = (function () {
             }
           }
           if (c !== undefined) {
+            // store.dispatch('upDataTdData', c.getAttribute('itemid'))
+            store.commit('clearCurrent')
+            c.className = ''
             mark(false, c);
           }
         }
       }
     }
     cell_index()
+    var oDiv = document.createElement("div")
+    oDiv.className = 'content'
+    oDiv.contentEditable = true
+    console.log([oDiv])
+    n.appendChild(oDiv)
+    // new Profile().$mount(oDiv);
   };
 
   get_table = function (table) {
@@ -328,21 +362,51 @@ TABLE.table = (function () {
     if (index === undefined) {
       index = -1;
     }
+    let _minEl = _.minBy(store.getters.currentElList, (o) => { return o.parentNode.rowIndex })
+    let _position = _minEl ? _minEl.parentNode.rowIndex : ''
     if (mode === 'insert') {
-      fr = table.rows[0];
+      fr = table.rows[_position];
+      console.log(fr, 'sss')
       for (i = 0; i < fr.cells.length; i++) {
-        cols += fr.cells[i].colSpan;
+        if (fr.cells[i].rowSpan <= 1) {
+          cols += fr.cells[i].colSpan;
+        }
       }
       nr = table.insertRow(index);
       for (i = 0; i < cols; i++) {
+        console.log(cols)
         nc = nr.insertCell(i);
         cell_init(nc);
+      }
+      if (position === 'bottom') {
+        for (let l = 0; l < index;  l++ ) {
+          for (let c = 0; c < table.rows[l].cells.length; c++) {
+            let cSpan = table.rows[l].cells[c].rowSpan
+            if (cSpan + l > index) {
+              table.rows[cSpan + l].cells[c].rowSpan += 1
+              table.rows[cSpan + l].insertCell(c);
+            }
+          }
+
+        }
       }
       cell_index();
     }
     else {
+      console.log(position)
       if (table.rows.length === 1) {
         return;
+      }
+      if (position === 'bottom') {
+        for (let l = _position + 1; l < index;  l++ ) {
+          for (let c = 0; c < table.rows[l].cells.length; c++) {
+            let cSpan = table.rows[l].cells[c].rowSpan
+            if (cSpan > 1) {
+              table.rows[l].cells[c].rowSpan =- 1
+            }
+          }
+
+        }
       }
       table.deleteRow(index);
       cl = cell_list(table);
@@ -538,8 +602,12 @@ TABLE.table = (function () {
         for (j = 0; j < cols; j++) {
           if (cl[i + '-' + j]) {
             c = cl[i + '-' + j];
-            // c.setAttribute('itemid', `${i}-${j}`)
-            c.innerHTML = (show_index) ? i + '-' + j : '';
+            c.setAttribute('itemid', `${i}-${j}`)
+            if (!c.getAttribute('UUID')) {
+              c.setAttribute('UUID', UUID.genV4().hexFields[2])
+            }
+            // console.log(UUID.genV4().hexFields[2], 'uuid')
+            // c.innerHTML = (show_index) ? i + '-' + j : '';
           }
         }
       }

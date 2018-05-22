@@ -8,7 +8,7 @@
         </div>
         <div class="float-r">
           <el-input v-model="formName" placeholder="请输入表单名称" size="mini"></el-input>
-          <el-button type="primary" size="mini">保存</el-button>
+          <el-button type="primary" size="mini" @click="getsed">保存</el-button>
           <div class="avatar">
             <img src="../../assets/avatar.jpg" />
           </div>
@@ -19,7 +19,7 @@
         <el-tab-pane v-for="(data, index) in widgetLists" :key="index">
           <span slot="label"><i :class="data.icon"></i> {{data.group}}</span>
           <ul class="controls-list clearfix">
-            <li class="controls" v-for="(item, key) in data.groupList" :key="key" @click="selectWidget(item.widgetType)" :title="item.name">
+            <li class="controls" v-for="(item, key) in data.groupList" :key="key" @click.prevent.stop="selectWidget(item.widgetType)" :title="item.name">
               <div class="controls-con">
                 <span class="controls-icon"><icon :icon="item.icon" class="controls-icon-style" fixed-width></icon></span>
                 <span class="controls-name">{{item.name}}</span>
@@ -29,208 +29,211 @@
         </el-tab-pane>
         <el-tab-pane label="页面设置">页面设置</el-tab-pane>
       </el-tabs>
-      <div class="toolbar">
-        <div class="top-set-btn-icon">
-          <el-tooltip class="item" effect="dark" content="加粗" placement="bottom">
-            <icon :icon="['fal', 'print']"/>
-            <!--<i class="fa fa-print"></i>-->
-          </el-tooltip>
-        </div>
-        <div class="top-set-btn-icon">
-          <el-tooltip class="item" effect="dark" content="加粗" placement="bottom">
-            <icon :icon="['fal', 'clone']"/>
-            <!--<i class="fa fa-clone"></i>-->
-          </el-tooltip>
-        </div>
-        <div class="top-set-btn-icon">
-          <el-tooltip class="item" effect="dark" content="加粗" placement="bottom">
-            <icon :icon="['fal', 'reply']"/>
-            <!--<i class="fa fa-reply"></i>-->
-          </el-tooltip>
-        </div>
-        <div class="top-set-btn-icon">
-          <el-tooltip class="item" effect="dark" content="加粗" placement="bottom">
-            <icon :icon="['fal', 'share']"/>
-            <!--<i class="fa fa-share"></i>-->
-          </el-tooltip>
-        </div>
-        <div class="top-set-btn-icon">
-          <el-tooltip class="item" effect="dark" content="加粗" placement="bottom">
-            <icon :icon="['fal', 'eraser']"/>
-            <!--<i class="fa fa-eraser"></i>-->
-          </el-tooltip>
-        </div>
-        <el-dropdown split-button size="mini" >
-          <el-tooltip class="item" effect="dark" content="居中对齐" placement="bottom">
-            <icon :icon="['fal', 'align-center']"/>
-            <!--<i class="fa fa-align-center"></i>-->
-          </el-tooltip>
-          <el-dropdown-menu slot="dropdown">
-            <el-tooltip class="item" effect="dark" content="俩端对齐" placement="left">
-              <el-dropdown-item>
-                <icon :icon="['fal', 'align-justify']"/>
-                <!--<i class="fa fa-align-justify"></i>-->
-              </el-dropdown-item>
-            </el-tooltip>
-            <el-tooltip class="item" effect="dark" content="居左对齐" placement="left">
-              <el-dropdown-item>
-                <icon :icon="['fal', 'align-left']"/>
-                <!--<i class="fa fa-align-left"></i>-->
-              </el-dropdown-item>
-            </el-tooltip>
-          </el-dropdown-menu>
-        </el-dropdown>
+      <div id="toolbarContainer" class="toolbar">
+        <!--<div class="top-set-btn-icon">-->
+          <!--<el-tooltip class="item" effect="dark" content="加粗" placement="bottom">-->
+            <!--<icon :icon="['fal', 'print']"/>-->
+            <!--&lt;!&ndash;<i class="fa fa-print"></i>&ndash;&gt;-->
+          <!--</el-tooltip>-->
+        <!--</div>-->
+        <!--<div class="top-set-btn-icon">-->
+          <!--<el-tooltip class="item" effect="dark" content="加粗" placement="bottom">-->
+            <!--<icon :icon="['fal', 'clone']"/>-->
+            <!--&lt;!&ndash;<i class="fa fa-clone"></i>&ndash;&gt;-->
+          <!--</el-tooltip>-->
+        <!--</div>-->
+        <!--<div class="top-set-btn-icon">-->
+          <!--<el-tooltip class="item" effect="dark" content="加粗" placement="bottom">-->
+            <!--<icon :icon="['fal', 'reply']"/>-->
+            <!--&lt;!&ndash;<i class="fa fa-reply"></i>&ndash;&gt;-->
+          <!--</el-tooltip>-->
+        <!--</div>-->
+        <!--<div class="top-set-btn-icon">-->
+          <!--<el-tooltip class="item" effect="dark" content="加粗" placement="bottom">-->
+            <!--<icon :icon="['fal', 'share']"/>-->
+            <!--&lt;!&ndash;<i class="fa fa-share"></i>&ndash;&gt;-->
+          <!--</el-tooltip>-->
+        <!--</div>-->
+        <!--<div class="top-set-btn-icon">-->
+          <!--<el-tooltip class="item" effect="dark" content="加粗" placement="bottom">-->
+            <!--<icon :icon="['fal', 'eraser']"/>-->
+            <!--&lt;!&ndash;<i class="fa fa-eraser"></i>&ndash;&gt;-->
+          <!--</el-tooltip>-->
+        <!--</div>-->
         <!--<el-dropdown split-button size="mini" >-->
-        <!--<el-tooltip class="item" effect="dark" content="字体" placement="bottom">-->
-        <!--<font-icon :icon="['fal', 'font']"/></el-tooltip>-->
-        <!--<el-dropdown-menu slot="dropdown">-->
-        <!--<el-dropdown-item><font-icon :icon="['fal', 'align-justify']"/></el-dropdown-item>-->
-        <!--<el-dropdown-item><font-icon :icon="['fal', 'align-left']"/></el-dropdown-item>-->
-        <!--</el-dropdown-menu>-->
+          <!--<el-tooltip class="item" effect="dark" content="居中对齐" placement="bottom">-->
+            <!--<icon :icon="['fal', 'align-center']"/>-->
+            <!--&lt;!&ndash;<i class="fa fa-align-center"></i>&ndash;&gt;-->
+          <!--</el-tooltip>-->
+          <!--<el-dropdown-menu slot="dropdown">-->
+            <!--<el-tooltip class="item" effect="dark" content="俩端对齐" placement="left">-->
+              <!--<el-dropdown-item>-->
+                <!--<icon :icon="['fal', 'align-justify']"/>-->
+                <!--&lt;!&ndash;<i class="fa fa-align-justify"></i>&ndash;&gt;-->
+              <!--</el-dropdown-item>-->
+            <!--</el-tooltip>-->
+            <!--<el-tooltip class="item" effect="dark" content="居左对齐" placement="left">-->
+              <!--<el-dropdown-item>-->
+                <!--<icon :icon="['fal', 'align-left']"/>-->
+                <!--&lt;!&ndash;<i class="fa fa-align-left"></i>&ndash;&gt;-->
+              <!--</el-dropdown-item>-->
+            <!--</el-tooltip>-->
+          <!--</el-dropdown-menu>-->
         <!--</el-dropdown>-->
-        <div class="top-set-btn-icon">
-          <el-tooltip class="item" effect="dark" content="加粗" placement="bottom">
-            <icon :icon="['fal', 'bold']" />
-            <!--<i class="fa fa-bold"></i>-->
-          </el-tooltip>
-        </div>
-        <div class="top-set-btn-icon">
-          <el-tooltip class="item" effect="dark" content="斜体" placement="bottom">
-            <icon :icon="['fal', 'italic']"/>
-            <!--<i class="fa fa-italic"></i>-->
-          </el-tooltip>
-        </div>
-        <el-dropdown split-button size="mini" >
-          <el-tooltip class="item" effect="dark" content="标题" placement="bottom">
-            <icon :icon="['fal', 'heading']"/>
-            <!--<i class="fa fa-header"></i>-->
-          </el-tooltip>
-          <el-dropdown-menu  slot="dropdown">
-            <el-tooltip class="item" effect="dark" content="俩端对齐" placement="left">
-              <el-dropdown-item>
-                <icon :icon="['fal', 'h1']"/>
-                <!--<i class="fa fa-header"></i>-->
-              </el-dropdown-item>
-            </el-tooltip>
-            <el-tooltip class="item" effect="dark" content="俩端对齐" placement="left">
-              <el-dropdown-item>
-                <icon :icon="['fal', 'h2']"/>
-                <!--<i class="fa fa-header"></i>-->
-              </el-dropdown-item>
-            </el-tooltip>
-            <el-tooltip class="item" effect="dark" content="俩端对齐" placement="left">
-              <el-dropdown-item>
-                <icon :icon="['fal', 'h3']"/>
-                <!--<i class="fa fa-header"></i>-->
-              </el-dropdown-item>
-            </el-tooltip>
-          </el-dropdown-menu>
-        </el-dropdown>
-        <div class="top-set-btn-icon">
-          <el-tooltip class="item" effect="dark" content="斜体" placement="bottom">
-            <icon :icon="['fal', 'underline']" />
-            <!--<i class="fa fa-underline"></i>-->
-          </el-tooltip>
-        </div>
-        <div class="top-set-btn-icon">
-          <el-tooltip class="item" effect="dark" content="斜体" placement="bottom">
-            <icon :icon="['fal', 'strikethrough']"/>
-            <!--<i class="fa fa-strikethrough"></i>-->
-          </el-tooltip>
-        </div>
-        <div class="top-set-btn-icon">
-          <el-tooltip class="item" effect="dark" content="斜体" placement="bottom">
-            <icon :icon="['fal', 'font']"/>
-            <!--<i class="fa fa-font"></i>-->
-          </el-tooltip>
-        </div>
-        <el-dropdown split-button size="mini" >
-          <el-tooltip class="item" effect="dark" content="标题" placement="bottom">
-            <icon :icon="['fal', 'th-large']"/>
-            <!--<i class="fa fa-th-large"></i>-->
-          </el-tooltip>
-          <el-dropdown-menu  slot="dropdown">
-            <el-tooltip class="item" effect="dark" content="俩端对齐" placement="left">
-              <el-dropdown-item >
-                <div @click="redips.merge()">合并</div>
-              </el-dropdown-item>
-            </el-tooltip>
-            <el-tooltip class="item" effect="dark" content="俩端对齐" placement="left">
-              <el-dropdown-item>
-                <div  @click="redips.split('v')">拆分行</div>
-              </el-dropdown-item>
-            </el-tooltip>
-            <el-tooltip class="item" effect="dark" content="俩端对齐" placement="left">
-              <el-dropdown-item>
-                <div @click="redips.split('h')">拆分列</div>
-              </el-dropdown-item>
-            </el-tooltip>
-          </el-dropdown-menu>
-        </el-dropdown>
-        <el-dropdown split-button size="mini" >
-          <el-tooltip class="item" effect="dark" content="标题" placement="bottom">
-            <icon :icon="['fal', 'table']"/>
-            <!--<i class="fa fa-table"></i>-->
-          </el-tooltip>
-          <el-dropdown-menu  slot="dropdown">
-            <el-tooltip class="item" effect="dark" content="俩端对齐" placement="left">
-              <el-dropdown-item>
-                <div @click="redips.row('insert')">添加行</div>
-              </el-dropdown-item>
-            </el-tooltip>
-            <el-tooltip class="item" effect="dark" content="俩端对齐" placement="left">
-              <el-dropdown-item>
-                <div @click="redips.row('delete')">删除行</div>
-              </el-dropdown-item>
-            </el-tooltip>
-            <el-tooltip class="item" effect="dark" content="俩端对齐" placement="left">
-              <el-dropdown-item>
-                <div @click="redips.column('insert')" >增加列</div>
-              </el-dropdown-item>
-            </el-tooltip>
-            <el-tooltip class="item" effect="dark" content="俩端对齐" placement="left">
-              <el-dropdown-item>
-                <div  @click="redips.column('delete')">删除列</div>
-              </el-dropdown-item>
-            </el-tooltip>
-          </el-dropdown-menu>
-        </el-dropdown>
-        <div class="top-set-btn-icon">
-          <el-tooltip class="item" effect="dark" content="斜体" placement="bottom">
-            <icon :icon="['fal', 'cut']"/>
-            <!--<i class="fa fa-cut"></i>-->
-          </el-tooltip>
-        </div>
-        <div class="top-set-btn-icon">
-          <el-tooltip class="item" effect="dark" content="斜体" placement="bottom">
-            <icon :icon="['fal', 'paint-brush']"/>
-            <!--<i class="fa fa-cut"></i>-->
-          </el-tooltip>
-        </div>
-        <div class="top-set-btn-icon">
-          <el-tooltip class="item" effect="dark" content="斜体" placement="bottom">
-            <icon :icon="['fal', 'link']"/>
-            <!--<i class="fa fa-link"></i>-->
-          </el-tooltip>
-        </div>
+        <!--&lt;!&ndash;<el-dropdown split-button size="mini" >&ndash;&gt;-->
+        <!--&lt;!&ndash;<el-tooltip class="item" effect="dark" content="字体" placement="bottom">&ndash;&gt;-->
+        <!--&lt;!&ndash;<font-icon :icon="['fal', 'font']"/></el-tooltip>&ndash;&gt;-->
+        <!--&lt;!&ndash;<el-dropdown-menu slot="dropdown">&ndash;&gt;-->
+        <!--&lt;!&ndash;<el-dropdown-item><font-icon :icon="['fal', 'align-justify']"/></el-dropdown-item>&ndash;&gt;-->
+        <!--&lt;!&ndash;<el-dropdown-item><font-icon :icon="['fal', 'align-left']"/></el-dropdown-item>&ndash;&gt;-->
+        <!--&lt;!&ndash;</el-dropdown-menu>&ndash;&gt;-->
+        <!--&lt;!&ndash;</el-dropdown>&ndash;&gt;-->
+        <!--<div class="top-set-btn-icon">-->
+          <!--<el-tooltip class="item" effect="dark" content="加粗" placement="bottom">-->
+            <!--<icon :icon="['fal', 'bold']" />-->
+            <!--&lt;!&ndash;<i class="fa fa-bold"></i>&ndash;&gt;-->
+          <!--</el-tooltip>-->
+        <!--</div>-->
+        <!--<div class="top-set-btn-icon">-->
+          <!--<el-tooltip class="item" effect="dark" content="斜体" placement="bottom">-->
+            <!--<icon :icon="['fal', 'italic']"/>-->
+            <!--&lt;!&ndash;<i class="fa fa-italic"></i>&ndash;&gt;-->
+          <!--</el-tooltip>-->
+        <!--</div>-->
+        <!--<el-dropdown split-button size="mini" >-->
+          <!--<el-tooltip class="item" effect="dark" content="标题" placement="bottom">-->
+            <!--<icon :icon="['fal', 'heading']"/>-->
+            <!--&lt;!&ndash;<i class="fa fa-header"></i>&ndash;&gt;-->
+          <!--</el-tooltip>-->
+          <!--<el-dropdown-menu  slot="dropdown">-->
+            <!--<el-tooltip class="item" effect="dark" content="俩端对齐" placement="left">-->
+              <!--<el-dropdown-item>-->
+                <!--<icon :icon="['fal', 'h1']"/>-->
+                <!--&lt;!&ndash;<i class="fa fa-header"></i>&ndash;&gt;-->
+              <!--</el-dropdown-item>-->
+            <!--</el-tooltip>-->
+            <!--<el-tooltip class="item" effect="dark" content="俩端对齐" placement="left">-->
+              <!--<el-dropdown-item>-->
+                <!--<icon :icon="['fal', 'h2']"/>-->
+                <!--&lt;!&ndash;<i class="fa fa-header"></i>&ndash;&gt;-->
+              <!--</el-dropdown-item>-->
+            <!--</el-tooltip>-->
+            <!--<el-tooltip class="item" effect="dark" content="俩端对齐" placement="left">-->
+              <!--<el-dropdown-item>-->
+                <!--<icon :icon="['fal', 'h3']"/>-->
+                <!--&lt;!&ndash;<i class="fa fa-header"></i>&ndash;&gt;-->
+              <!--</el-dropdown-item>-->
+            <!--</el-tooltip>-->
+          <!--</el-dropdown-menu>-->
+        <!--</el-dropdown>-->
+        <!--<div class="top-set-btn-icon">-->
+          <!--<el-tooltip class="item" effect="dark" content="斜体" placement="bottom">-->
+            <!--<icon :icon="['fal', 'underline']" />-->
+            <!--&lt;!&ndash;<i class="fa fa-underline"></i>&ndash;&gt;-->
+          <!--</el-tooltip>-->
+        <!--</div>-->
+        <!--<div class="top-set-btn-icon">-->
+          <!--<el-tooltip class="item" effect="dark" content="斜体" placement="bottom">-->
+            <!--<icon :icon="['fal', 'strikethrough']"/>-->
+            <!--&lt;!&ndash;<i class="fa fa-strikethrough"></i>&ndash;&gt;-->
+          <!--</el-tooltip>-->
+        <!--</div>-->
+        <!--<div class="top-set-btn-icon">-->
+          <!--<el-tooltip class="item" effect="dark" content="斜体" placement="bottom">-->
+            <!--<icon :icon="['fal', 'font']"/>-->
+            <!--&lt;!&ndash;<i class="fa fa-font"></i>&ndash;&gt;-->
+          <!--</el-tooltip>-->
+        <!--</div>-->
+        <!--<el-dropdown split-button size="mini" >-->
+          <!--<el-tooltip class="item" effect="dark" content="标题" placement="bottom">-->
+            <!--<icon :icon="['fal', 'th-large']"/>-->
+            <!--&lt;!&ndash;<i class="fa fa-th-large"></i>&ndash;&gt;-->
+          <!--</el-tooltip>-->
+          <!--<el-dropdown-menu  slot="dropdown">-->
+            <!--<el-tooltip class="item" effect="dark" content="俩端对齐" placement="left">-->
+              <!--<el-dropdown-item >-->
+                <!--<div @click="redips.merge()">合并</div>-->
+              <!--</el-dropdown-item>-->
+            <!--</el-tooltip>-->
+            <!--<el-tooltip class="item" effect="dark" content="俩端对齐" placement="left">-->
+              <!--<el-dropdown-item>-->
+                <!--<div  @click="redips.split('v')">拆分行</div>-->
+              <!--</el-dropdown-item>-->
+            <!--</el-tooltip>-->
+            <!--<el-tooltip class="item" effect="dark" content="俩端对齐" placement="left">-->
+              <!--<el-dropdown-item>-->
+                <!--<div @click="redips.split('h')">拆分列</div>-->
+              <!--</el-dropdown-item>-->
+            <!--</el-tooltip>-->
+          <!--</el-dropdown-menu>-->
+        <!--</el-dropdown>-->
+        <!--<el-dropdown split-button size="mini" >-->
+          <!--<el-tooltip class="item" effect="dark" content="标题" placement="bottom">-->
+            <!--<icon :icon="['fal', 'table']"/>-->
+            <!--&lt;!&ndash;<i class="fa fa-table"></i>&ndash;&gt;-->
+          <!--</el-tooltip>-->
+          <!--<el-dropdown-menu  slot="dropdown">-->
+            <!--<el-tooltip class="item" effect="dark" content="俩端对齐" placement="left">-->
+              <!--<el-dropdown-item>-->
+                <!--<div @click="redips.row('insert')">添加行</div>-->
+              <!--</el-dropdown-item>-->
+            <!--</el-tooltip>-->
+            <!--<el-tooltip class="item" effect="dark" content="俩端对齐" placement="left">-->
+              <!--<el-dropdown-item>-->
+                <!--<div @click="redips.row('delete')">删除行</div>-->
+              <!--</el-dropdown-item>-->
+            <!--</el-tooltip>-->
+            <!--<el-tooltip class="item" effect="dark" content="俩端对齐" placement="left">-->
+              <!--<el-dropdown-item>-->
+                <!--<div @click="redips.column('insert')" >增加列</div>-->
+              <!--</el-dropdown-item>-->
+            <!--</el-tooltip>-->
+            <!--<el-tooltip class="item" effect="dark" content="俩端对齐" placement="left">-->
+              <!--<el-dropdown-item>-->
+                <!--<div  @click="redips.column('delete')">删除列</div>-->
+              <!--</el-dropdown-item>-->
+            <!--</el-tooltip>-->
+          <!--</el-dropdown-menu>-->
+        <!--</el-dropdown>-->
+        <!--<div class="top-set-btn-icon">-->
+          <!--<el-tooltip class="item" effect="dark" content="斜体" placement="bottom">-->
+            <!--<icon :icon="['fal', 'cut']"/>-->
+            <!--&lt;!&ndash;<i class="fa fa-cut"></i>&ndash;&gt;-->
+          <!--</el-tooltip>-->
+        <!--</div>-->
+        <!--<div class="top-set-btn-icon">-->
+          <!--<el-tooltip class="item" effect="dark" content="斜体" placement="bottom">-->
+            <!--<icon :icon="['fal', 'paint-brush']"/>-->
+            <!--&lt;!&ndash;<i class="fa fa-cut"></i>&ndash;&gt;-->
+          <!--</el-tooltip>-->
+        <!--</div>-->
+        <!--<div class="top-set-btn-icon">-->
+          <!--<el-tooltip class="item" effect="dark" content="斜体" placement="bottom">-->
+            <!--<icon :icon="['fal', 'link']"/>-->
+            <!--&lt;!&ndash;<i class="fa fa-link"></i>&ndash;&gt;-->
+          <!--</el-tooltip>-->
+        <!--</div>-->
       </div>
     </el-header>
     <el-container>
       <el-main class="webform-main">
         <div class="page-preview">
-          <tableView></tableView>
+          <froala :tag="'div'" ref="froala" :config="config"><tableView ref="tableView"></tableView></froala>
         </div>
       </el-main>
-      <webformSidebar :currentView="currentView"></webformSidebar>
+      <webformSidebar ref="webformSidebar"></webformSidebar>
     </el-container>
   </el-container>
 </template>
 
 <script>
 import {mapMutations, mapGetters} from 'vuex'
-import widget from '@/components/webform/webform-widget'
+import widgetLists from '@/components/webform/webform-widget'
 import tableView from '@/components/webform/table-views'
 import webformSidebar from './webform-sidebar'
+import $ from 'jquery'
+import UUID from 'uuidjs'
+import { Widget } from '@/components/webform/widget'
 export default {
   name: 'webformTemplate',
   data () {
@@ -238,26 +241,113 @@ export default {
       formName: '',
       webformAside: 'first',
       widgetLists: [],
-      currentView: ''
+      currentView: '',
+      widgetKey: '',
+      widgetName: '',
+      editor: {},
+      config: {
+        events: {
+          'froalaEditor.initialized': (e, editor) => {
+            console.log('initialized', this, e, editor)
+            this.editor = editor
+            // this.$refs.froala.$el.childNodes[0].removeChild(this.$refs.froala.$el.childNodes[0].firstChild)
+            // console.log(this.$refs.froala.$el.childNodes[0].removeChild(this.$refs.froala.$el.childNodes[0].firstChild))
+          },
+          'html.getSelected': function (e, editor) {
+            console.log(e, editor)
+            // editor.events.bindClick($('body'), '#release', function () {
+            //   var fs = editor.html.get()
+            //   $("#msgForm").submit()
+            //   editor.events.focus()
+            // });
+          },
+          // 添加事件，在每次按键按下时，都记录一下最后停留位置
+          'froalaEditor.keyup': (e, editor) => {
+            console.log(e, editor)
+            this.lastEditRange = getSelection().getRangeAt(0)
+          },
+          // 添加事件，在每次鼠标点击时，都记录一下最后停留位置
+          'froalaEditor.mousedown': (e, editor, html) => {
+            console.log(e, editor, html.target)
+            $('.contactTable').find('.content-sed').removeClass('content-sed')
+          },
+          'froalaEditor.mouseup': (e, editor, html) => {
+            console.log(e, html, $(html.target).parents('td').length, html.target.nodeName === 'TD')
+            if ($(html.target).parents('td').length) {
+              console.log('222', this.setCurrenttd)
+              $(html.target).parents('td').addClass('content-sed')
+              this.setCurrenttd($(html.target).parents('td')[0])
+            } else if (html.target.nodeName === 'TD') {
+              console.log('11')
+              this.setCurrenttd(html.target)
+              $(html.target).addClass('content-sed')
+            }
+          }
+        },
+        language: 'zh_cn',
+        // toolbarInline: true,
+        // toolbarSticky: false,
+        toolbarButtons: ['bold', 'italic', 'underline', 'strikeThrough', 'subscript', 'superscript', '|', 'fontFamily', 'fontSize', 'color', 'inlineStyle', 'paragraphStyle', '|', 'paragraphFormat', 'align', 'formatOL', 'formatUL', 'outdent', 'indent', 'insertLink', 'insertImage', 'insertFile', 'insertTable', '|', 'specialCharacters', 'insertHR', 'selectAll', 'clearFormatting', '|', 'print', 'help', '|', 'undo', 'redo'],
+        // tableEditButtons: ['tableRows', 'tableColumns', 'tableCells', 'tableCellVerticalAlign', 'tableHeader'],
+        // tableInsertButtons: ['tableBack', 'tableRows', 'tableColumns', 'tableCells', 'tableCellVerticalAlign', 'tableHeader'],
+        toolbarContainer: '#toolbarContainer',
+        tableColors: ['#61BD6D', '#1ABC9C', '#54ACD2', 'REMOVE']
+        // tableColorsButtons: ['tableBack']
+      },
+      model: 'Edit Your Content Here!'
     }
   },
   created () {
-    this.widgetLists = widget
-    console.log(tableView)
+    this.widgetLists = widgetLists
+    console.log(this.currentElList)
+  },
+  mounted: function () {
+    this.$nextTick(() => {
+
+    })
   },
   methods: {
+    getsed () {
+      console.log(this.editor)
+    },
     selectWidget (widgetType) {
-      console.log(widgetType)
-      this.currentView = widgetType
-      this.tdAddWidgets()
-      if (this.tdWidgets[widgetType]) {
-        this.currentElList[0].innerHTML = this.tdWidgets[widgetType].outerHTML
+      this.widgetName = widgetType
+      if (!this.currenttd.getAttribute('UUID')) {
+        this.currenttd.setAttribute('UUID', UUID.genV4().hexFields[2])
       }
-      console.log(this.tdWidgets[widgetType])
+      this.addTdCtrlWidgetNmae({
+        tdid: this.currenttd.getAttribute('uuid'),
+        CtrlWidget: widgetType
+      })
+      console.log([this.currenttd])
+      this.widgetKey = this.currenttd.getAttribute('UUID')
+      let currentWidget = new Widget({
+        propsData: {
+          widgetNmae: widgetType,
+          position: this.currenttd.getAttribute('UUID')
+        }
+      })
+      currentWidget.$mount(this.currenttd.firstChild)
+      this.$refs.webformSidebar.$emit('insertWidgetCtrl', widgetType, this.widgetKey)
+      // console.log(this.getTdWidget(this.currenttd.getAttribute('UUID')), ';;;;;;;;;')
     },
     ...mapMutations([
-      'tdAddWidgets'
+      'addTdCtrlWidgetNmae',
+      'setCurrenttd'
     ])
+  },
+  watch: {
+    'currenttd': {
+      handler: function (val, oldval) {
+        console.log(val)
+        if (val && this.getTdWidget(val.getAttribute('UUID'))) {
+          this.$refs.webformSidebar.$emit('insertWidgetCtrl', this.getTdWidget(val.getAttribute('UUID')).CtrlWidget, this.widgetKey)
+        } else {
+          this.$refs.webformSidebar.$emit('insertWidgetCtrl', '', this.widgetKey)
+        }
+      },
+      deep: true // 对象内部的属性监听，也叫深度监听
+    }
   },
   components: {
     tableView,
@@ -265,13 +355,24 @@ export default {
   },
   computed: {
     ...mapGetters([
-      'tdWidgets',
-      'currentElList'
+      'widgets',
+      'currentElList',
+      'currenttd',
+      'getTdWidget'
     ])
   }
 }
 </script>
 <style lang="scss">
+  .fr-wrapper {
+    & > div[style^="z-index"] {
+      display: none;
+      height: 0;
+      overflow: hidden;
+      position: absolute !important;
+      top: -1000px;
+    }
+  }
   .webform-wrapper {
     .webform-header {
       .toolbar {
@@ -308,6 +409,34 @@ export default {
         .el-dropdown__icon {
           margin: 0;
           transform:scale(0.7);
+        }
+        .fr-toolbar {
+          border-top: 0px solid #222;
+          box-shadow: none;
+          background-color: transparent;
+          padding-top: rem(3);
+          text-align: center;
+          white-space:nowrap;
+          .fr-separator {
+            &.fr-vs {
+              height: rem(26);
+              display: inline-block;
+              float: none;
+              vertical-align: middle;
+            }
+          }
+          .fr-command {
+            &.fr-btn {
+              width: rem(30);
+              height: rem(30);
+              display: inline-block;
+              float: none;
+              vertical-align: middle;
+              i {
+                margin: rem(5);
+              }
+            }
+          }
         }
       }
     }
@@ -378,7 +507,7 @@ export default {
         height: rem(36);
         font-size: 12px;
         text-align: center;
-        padding: 8px 0;
+        /*padding: 8px 0;*/
         padding-right: rem(220);
         .top-set-btn-icon {
           border: 1px solid rgba(153, 153, 153, 0);

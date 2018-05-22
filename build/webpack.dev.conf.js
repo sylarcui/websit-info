@@ -22,6 +22,7 @@ const devWebpackConfig = merge(baseWebpackConfig, {
 
   // these devServer options should be customized in /config/index.js
   devServer: {
+    disableHostCheck: true,
     clientLogLevel: 'warning',
     historyApiFallback: {
       rewrites: [
@@ -47,6 +48,11 @@ const devWebpackConfig = merge(baseWebpackConfig, {
   plugins: [
     new webpack.DefinePlugin({
       'process.env': require('../config/dev.env')
+    }),
+    // Jquery loader plugin.
+    new webpack.ProvidePlugin({
+      $: "jquery",
+      jQuery: "jquery"
     }),
     new webpack.HotModuleReplacementPlugin(),
     new webpack.NamedModulesPlugin(), // HMR shows correct file names in console on update.

@@ -4,6 +4,7 @@
       <el-tab-pane name="first">
         <span slot="label"><icon :icon="['fal','wrench']"></icon> 控件属性</span> 控件属性
         <component :is="currentView"></component>
+        <!--<div ref="widgetCtrl" id="aaa"><div></div></div>-->
       </el-tab-pane>
       <el-tab-pane name="second">
         <span slot="label"><icon :icon="['fal','tasks']"></icon> 控件列表</span>配置管理
@@ -13,27 +14,36 @@
 </template>
 
 <script>
-import * as widgetsl from '@/components/webform/widgets'
-
+import * as widgetsl from '@/components/webform/widgets/ctrl'
+// import {Ctrl} from '@/components/webform/widget'
 export default {
   name: 'webformSidebar',
-  props: ['currentView'],
+  // props: ['currentView'],
   data () {
     return {
       webformAside: 'first',
-      widgetLists: {}
+      widgetLists: {},
+      currentView: ''
     }
   },
   created () {
-    this.widgetLists = widgetsl
-    console.log(this.widgetLists, 'widgetListswidgetLists')
+    // this.widgetLists = widgetsl
+    // console.log(this.widgetLists, 'widgetListswidgetLists')
+  },
+  mounted () {
+    this.$on('insertWidgetCtrl', (widgetNmae, position) => {
+      this.initWidgetCtrl(widgetNmae, position)
+    })
+  },
+  watch: {
+    // currentView (val, oldVal) {
+    //   // console.log('new: %s, old: %s', val, oldVal)
+    //   console.log(this)
+    // }
   },
   methods: {
-    gey () {
-      this.currentView = 'inputWidget'
-    },
-    geyone () {
-      this.currentView = 'check'
+    initWidgetCtrl (widgetNmae, position) {
+      this.currentView = widgetNmae
     }
   },
   components: widgetsl

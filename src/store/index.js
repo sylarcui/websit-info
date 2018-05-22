@@ -4,6 +4,7 @@ import mutations from './mutations'
 import actions from './actions'
 import getters from './getters'
 import tableObj from './modules/table'
+import widgets from './modules/widget'
 
 Vue.use(Vuex)
 
@@ -20,6 +21,7 @@ export default new Vuex.Store({
   actions,
   mutations,
   modules: {
-    tableObj
+    tableObj,
+    widgets
   }
 })

@@ -1,43 +1,11 @@
 <template>
-  <div class="table-views" contenteditable="true">
-    <table id="toolbox">
-      <tbody>
-      <tr>
-        <td>
-          <input type="button" value="Merge" class="button" @click="tableEvent.merge()" title="Merge marked table cells horizontally and verically"/>
-        </td>
-        <td>
-          <input type="button" value="Split H" class="button" @click="tableEvent.split('h')" title="Split marked table cell horizontally"/>
-          <input type="button" value="Split V" class="button" @click="tableEvent.split('v')" title="Split marked table cell vertically"/>
-        </td>
-        <td>
-          <input type="button" value="开头 +" class="button" @click="tableEvent.row('insert', 'start')" title="Add table row"/>
-          <input type="button" value="最后 +" class="button" @click="tableEvent.row('insert', 'end')" title="Add table row"/>
-          <input type="button" value="上方 +" class="button" @click="tableEvent.row('insert', 'top')" title="Add table row"/>
-          <input type="button" value="下方 +" class="button" @click="tableEvent.row('insert', 'bottom')" title="Add table row"/>
-          <input type="button" value="最后 -" class="button" @click="tableEvent.row('delete', 'start')" title="Delete table row"/>
-          <input type="button" value="开头 -" class="button" @click="tableEvent.row('delete', 'end')" title="Delete table row"/>
-          <input type="button" value="上方 -" class="button" @click="tableEvent.row('delete', 'top')" title="Delete table row"/>
-          <input type="button" value="下方 -" class="button" @click="tableEvent.row('delete', 'bottom')" title="Delete table row"/>
-        </td>
-        <td>
-          <input type="button" value="开头 +" class="button" @click="tableEvent.column('insert', 'start')" title="Add table column"/>
-          <input type="button" value="最后 +" class="button" @click="tableEvent.column('insert', 'end')" title="Add table column"/>
-          <input type="button" value="右侧 +" class="button" @click="tableEvent.column('insert', 'right')" title="Add table column"/>
-          <input type="button" value="左侧 +" class="button" @click="tableEvent.column('insert', 'left')" title="Add table column"/>
-          <input type="button" value="开头 -" class="button" @click="tableEvent.column('delete', 'start')" title="Delete table column"/>
-          <input type="button" value="最后 -" class="button" @click="tableEvent.column('delete', 'end')" title="Delete table column"/>
-          <input type="button" value="右侧 -" class="button" @click="tableEvent.column('delete', 'right')" title="Delete table column"/>
-          <input type="button" value="左侧 -" class="button" @click="tableEvent.column('delete', 'left')" title="Delete table column"/>
-        </td>
-      </tr>
-      </tbody>
-    </table>
-    <div class="contactTable"  ref="contactTable">
-      <table id="mainTable" contenteditable="true"  width="100%">
+  <div class="table-views">
+    <div class="contactTable">
+      <table width="100%" contenteditable="true">
         <tbody>
         <tr v-for="(v, i) in tdData" :key="i">
-          <td v-for="(m, j) in v" :key="j" :y="j" >
+          <td v-for="(m, j) in v" :key="j" :y="j">
+            <div>sss</div>
           </td>
         </tr>
         </tbody>
@@ -48,6 +16,7 @@
 
 <script>
 import {mapActions, mapGetters} from 'vuex'
+// import * as widgetsl from '@/components/webform/widgets'
 import _ from 'lodash'
 // import Vue from 'vue'
 export default {
@@ -58,7 +27,8 @@ export default {
   data () {
     return {
       tableEvent: {},
-      tableEl: ''
+      tableEl: '',
+      position: ''
     }
   },
   directives: {
@@ -78,10 +48,11 @@ export default {
   mounted: function () {
     this.$nextTick(() => {
       this.tableEl = this.$refs.contactTable
+      console.log(this.$refs.currentViewPan)
       this.tableEvent.init = () => {
         var rt = this.TABLE.table
         rt.onmousedown('mainTable', true)
-        rt.cell_index(false, this.initTableData)
+        rt.cell_index(true)
         rt.color.cell = this.cellColor
       }
       this.tableEvent.merge = () => {
@@ -91,7 +62,6 @@ export default {
       this.tableEvent.split = (mode) => {
         this.TABLE.table.split(mode)
       }
-      console.log(this.cellColor)
       this.tableEvent.row = (type, position) => {
         console.log(this.currentElList)
         let _minEl = _.minBy(this.currentElList, (o) => { return o.parentNode.rowIndex })
@@ -104,10 +74,20 @@ export default {
             _position = -1
             break
           case 'top':
-            _position = _minEl ? _position - 1 : 0
+            if (type === 'delete') {
+              _position = _minEl ? _position + _minEl.rowSpan : 0
+            } else {
+              _position = _minEl ? _position + _minEl.rowSpan : 0
+            }
+            // _position = _minEl ? _position : 0
             break
           case 'bottom':
-            _position = _minEl ? _position : -1
+            if (type === 'delete') {
+              _position = _minEl ? _position + _minEl.rowSpan : 0
+            } else {
+              _position = _minEl ? _position + _minEl.rowSpan : 0
+            }
+            // _position = _minEl ? _position : -1
             break
           default:
             _position = ''
@@ -144,12 +124,12 @@ export default {
         console.log(_position)
         this.TABLE.table.column('mainTable', type, _position)
       }
-
-      if (window.addEventListener) {
-        window.addEventListener('load', this.tableEvent.init, false)
-      } else if (window.attachEvent) {
-        window.attachEvent('onload', this.tableEvent.init)
-      }
+      this.tableEvent.init()
+      // if (window.addEventListener) {
+      //   window.addEventListener('load', this.tableEvent.init, false)
+      // } else if (window.attachEvent) {
+      //   window.attachEvent('onload', this.tableEvent.init)
+      // }
     })
   },
   computed: {
@@ -157,23 +137,33 @@ export default {
       'tdData',
       'rowData',
       'colData',
-      'currentElList'
-    ])
+      'currentElList',
+      'widgets'
+    ]),
+    currentView () {
+      if (this.currentElList[0]) {
+        return this.widgets[this.$refs.componentss.parentNode.getAttribute('UUID')]
+      } else {
+        return ''
+      }
+    }
   },
-  datas: {
-    a: '<div></div>'
-  },
+  // components: widgetsl,
   methods: {
+    clicktd (e) {
+      console.log(e)
+    },
     ...mapActions([
-      'setTdData',
-      'initTdData',
-      'setTdStyle'
+      'initTdData'
     ])
   }
 }
 </script>
 
 <style lang="scss">
+  .content-sed {
+    border: 1px double #1e88e5 !important;
+  }
   .table-views {
     outline: none;
     padding: rem(20);

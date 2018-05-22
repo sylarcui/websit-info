@@ -49,6 +49,7 @@ export default {
   },
   methods: {
     goLogin () {
+      // console.log($)
       this.$router.push({ name: 'main' })
     }
   }

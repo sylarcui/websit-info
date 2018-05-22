@@ -7,7 +7,11 @@
 <script>
 import 'normalize.css/normalize.css'
 export default {
-  name: 'App'
+  name: 'App',
+  data () {
+    return {
+    }
+  }
 }
 </script>
 

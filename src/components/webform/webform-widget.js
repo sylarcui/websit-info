@@ -11,7 +11,7 @@ const widget = [
       {
         name: '单选框',
         icon: ['fas', 'check-circle'],
-        widgetType: 'radiobox'
+        widgetType: 'inputWidget'
       },
       {
         name: '下拉框',
