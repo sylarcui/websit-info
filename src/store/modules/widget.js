@@ -4,7 +4,7 @@ const widgets = {
   state: {
     widgets: {},
     tdWidgetList: {},
-    currenttd: {}
+    currenttd: ''
   },
   getters: {
     getTdWidget: state => id => state.tdWidgetList[id],

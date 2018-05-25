@@ -57,7 +57,8 @@ export default {
       margin-top: rem(-35);
     }
     .el-tabs__content {
-      height: calc(100% - 2.25rem);
+      /*height: calc(100% - 2.25rem);*/
+      height: 100%;
       background-color: white;
       border-left: 1px solid #d1d1d1;
     }

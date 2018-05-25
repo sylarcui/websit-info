@@ -14,12 +14,7 @@
     "build": "node build/build.js"
   },
   "dependencies": {
-    "@fortawesome/fontawesome": "^1.1.7",
-    "@fortawesome/fontawesome-free-brands": "^5.0.12",
-    "@fortawesome/fontawesome-pro-light": "^5.0.12",
-    "@fortawesome/fontawesome-pro-regular": "^5.0.12",
-    "@fortawesome/fontawesome-pro-solid": "^5.0.12",
-    "@fortawesome/vue-fontawesome": "0.0.22",
+    "@fortawesome/vue-fontawesome": "^0.0.22",
     "axios": "^0.18.0",
     "element-ui": "^2.3.7",
     "jquery": "^3.3.1",

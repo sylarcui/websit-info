@@ -218,7 +218,8 @@
     <el-container>
       <el-main class="webform-main">
         <div class="page-preview">
-          <froala :tag="'div'" ref="froala" :config="config"><tableView ref="tableView"></tableView></froala>
+          <froala :tag="'div'" ref="froala" :config="config" v-model="model"></froala>
+          <!--<tableView ref="tableView"></tableView>-->
           <!--<froala :onManualControllerReady="initialize" :config="config" v-model="model">Check out the <a href="https://www.froala.com/wysiwyg-editor">Froala Editor</a>-->
 
           <!--</froala>-->
@@ -257,16 +258,16 @@ export default {
           // 添加事件，在每次按键按下时，都记录一下最后停留位置
           'froalaEditor.commands.before': (e, editor, html) => {
             console.log(e, editor, editor.core.isEmpty(), editor.selection.inEditor(), html, !this.currenttd)
-            if (this.currenttd) {
-              editor.selection.setAtEnd(this.currenttd)
-            } else if (!editor.selection.inEditor() && !this.currenttd) {
-              return false
-            }
+            // if (this.currenttd) {
+            //   editor.selection.setAtEnd(this.currenttd)
+            // } else if (!editor.selection.inEditor() && !this.currenttd) {
+            //   return false
+            // }
           },
           // 添加事件，在每次鼠标点击时，都记录一下最后停留位置
           'froalaEditor.mousedown': (e, editor, html) => {
-            // console.log(e, editor, html.target)
-            $('.contactTable').find('.content-sed').removeClass('content-sed')
+            console.log(e, editor, $(editor.el).find('.content-sed'))
+            $(editor.el).find('.content-sed').removeClass('content-sed')
             this.setCurrenttd('')
           },
           'froalaEditor.mouseup': (e, editor, html) => {
@@ -301,8 +302,8 @@ export default {
         },
         // toolbarInline: true,
         // toolbarSticky: false,
-        toolbarButtons: ['check', 'bold', 'italic', 'underline', 'strikeThrough', 'subscript', 'superscript', '|', 'fontFamily', 'fontSize', 'color', 'inlineStyle', 'paragraphStyle', '|', 'paragraphFormat', 'align', 'formatOL', 'formatUL', 'outdent', 'indent', 'insertLink', 'insertImage', 'insertFile', 'insertTable', '|', 'specialCharacters', 'insertHR', 'selectAll', 'clearFormatting', '|', 'print', 'help', '|', 'undo', 'redo'],
-        tableEditButtons: ['tableHeader', 'check', '|', 'tableRows', 'tableColumns', 'tableStyle', '-', 'tableCells', 'tableCellBackground', 'tableCellVerticalAlign', 'tableCellHorizontalAlign', 'tableCellStyle'],
+        // toolbarButtons: ['check', 'bold', 'italic', 'underline', 'strikeThrough', 'subscript', 'superscript', '|', 'fontFamily', 'fontSize', 'color', 'inlineStyle', 'paragraphStyle', '|', 'paragraphFormat', 'align', 'formatOL', 'formatUL', 'outdent', 'indent', 'insertLink', 'insertImage', 'insertFile', 'insertTable', '|', 'specialCharacters', 'insertHR', 'selectAll', 'clearFormatting', '|', 'print', 'help', '|', 'undo', 'redo'],
+        // tableEditButtons: ['tableHeader', 'check', '|', 'tableRows', 'tableColumns', 'tableStyle', '-', 'tableCells', 'tableCellBackground', 'tableCellVerticalAlign', 'tableCellHorizontalAlign', 'tableCellStyle'],
         // tableInsertButtons: ['tableBack', 'tableRows', 'tableColumns', 'tableCells', 'tableCellVerticalAlign', 'tableHeader'],
         toolbarContainer: '#toolbarContainer'
         // tableColors: ['#61BD6D', '#1ABC9C', '#54ACD2', 'REMOVE']
@@ -404,6 +405,9 @@ export default {
 }
 </script>
 <style lang="scss">
+  .content-sed {
+    border: 1px double #1e88e5 !important;
+  }
   .fr-wrapper {
     & > div[style^="z-index"] {
       display: none;
