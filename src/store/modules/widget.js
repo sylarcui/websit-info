@@ -8,6 +8,7 @@ const widgets = {
   },
   getters: {
     getTdWidget: state => id => state.tdWidgetList[id],
+    tdWidget: state => state.tdWidgetList[state.currenttd.getAttribute('UUID')],
     tdWidgetList: state => state.tdWidgetList,
     currenttd: state => state.currenttd
   },
@@ -20,6 +21,11 @@ const widgets = {
     },
     addTdData (state, {tdid, data}) {
       Vue.set(state.tdWidgetList[tdid], 'data', data)
+    },
+    updataTdData (state, {key, value}) {
+      let tdid = state.currenttd.getAttribute('UUID')
+      Vue.set(state.tdWidgetList[tdid]['data'], key, value)
+      console.log(state.tdWidgetList[tdid]['data'][key])
     },
     delTdData (state, tdid) {
       Vue.delete(state.tdWidgetList, tdid)
@@ -34,9 +40,12 @@ const widgets = {
       let tdid = state.currenttd.getAttribute('UUID')
       let data = _.cloneDeep(newWidget.$data)
       commit('addTdData', {tdid, data})
-      for (let i in newWidget.$data) {
-        newWidget[i] = getters.getTdWidget(tdid).data[i]
-        newWidget[i].push(tdid)
+      for (let i in data) {
+        console.log(i, '====>', data)
+        // newWidget[i] = getters.getTdWidget(tdid).data[i]
+        // newWidget[i].push(tdid)
+        Vue.set(newWidget, i, getters.tdWidget.data[i])
+        // console.log()
       }
     },
     updataTdWidgetData ({commit, state, getters, rootState}, {val, newWidget}) {
@@ -51,8 +60,8 @@ const widgets = {
         }
       }
     },
-    upDataTdData ({commit}, tdid) {
-      commit('delTdData', tdid)
+    upDataTdDataActions ({commit}, {key, value}) {
+      commit('updataTdData', {key, value})
     },
     initCtrlTdData ({state, commit, getters, rootState}, newWidget) {
       let tdid = state.currenttd.getAttribute('UUID')

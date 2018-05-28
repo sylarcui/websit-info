@@ -218,7 +218,15 @@
     <el-container>
       <el-main class="webform-main">
         <div class="page-preview">
-          <froala :tag="'div'" ref="froala" :config="config" v-model="model"></froala>
+          <froala :tag="'div'" ref="froala" :config="config">
+            <table width="100%">
+              <tr>
+                <td></td>
+                <td></td>
+                <td></td>
+              </tr>
+            </table>
+          </froala>
           <!--<tableView ref="tableView"></tableView>-->
           <!--<froala :onManualControllerReady="initialize" :config="config" v-model="model">Check out the <a href="https://www.froala.com/wysiwyg-editor">Froala Editor</a>-->
 

@@ -1,8 +1,8 @@
 <template>
-  <el-aside width="220px"  class="webform-aside">
+  <el-aside width="250px"  class="webform-aside">
     <el-tabs v-model="webformAside" type="card">
       <el-tab-pane name="first">
-        <span slot="label"><icon :icon="['fal','wrench']"></icon> 控件属性</span> 控件属性
+        <span slot="label"><icon :icon="['fal','wrench']"></icon> 控件属性</span>
         <component :is="currentView"></component>
         <!--<div ref="widgetCtrl" id="aaa"><div></div></div>-->
       </el-tab-pane>
@@ -52,9 +52,15 @@ export default {
 <style lang="scss">
   .webform-aside {
     overflow: initial;
+    .el-form--label-top .el-form-item__label {
+      padding-bottom: 0;
+    }
     .el-tabs {
       height: 100%;
       margin-top: rem(-35);
+    }
+    .el-tab-pane {
+      padding: rem(10);
     }
     .el-tabs__content {
       /*height: calc(100% - 2.25rem);*/
