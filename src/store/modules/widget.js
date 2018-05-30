@@ -8,7 +8,7 @@ const widgets = {
   },
   getters: {
     getTdWidget: state => id => state.tdWidgetList[id],
-    tdWidget: state => state.tdWidgetList[state.currenttd.getAttribute('UUID')],
+    tdWidget: state => state.tdWidgetList[state.currenttd.UUID],
     tdWidgetList: state => state.tdWidgetList,
     currenttd: state => state.currenttd
   },
@@ -23,7 +23,7 @@ const widgets = {
       Vue.set(state.tdWidgetList[tdid], 'data', data)
     },
     updataTdData (state, {key, value}) {
-      let tdid = state.currenttd.getAttribute('UUID')
+      let tdid = state.currenttd.UUID
       Vue.set(state.tdWidgetList[tdid]['data'], key, value)
       console.log(state.tdWidgetList[tdid]['data'][key])
     },
@@ -37,9 +37,15 @@ const widgets = {
   },
   actions: { // 同步
     initTdNewWidgetData ({commit, state, getters, rootState}, {newWidget}) {
-      let tdid = state.currenttd.getAttribute('UUID')
+      let tdid = state.currenttd.UUID
+      let _fieldNameObj = {
+        widgetFieldName: '1111',
+        widgetFieldNamePinyin: '1111'
+      }
+      // Object.assign(newWidget.$data, _fieldNameObj)
       let data = _.cloneDeep(newWidget.$data)
       commit('addTdData', {tdid, data})
+      console.log(newWidget)
       for (let i in data) {
         console.log(i, '====>', data)
         // newWidget[i] = getters.getTdWidget(tdid).data[i]
@@ -47,9 +53,10 @@ const widgets = {
         Vue.set(newWidget, i, getters.tdWidget.data[i])
         // console.log()
       }
+      Object.assign(getters.tdWidget.data, _fieldNameObj)
     },
     updataTdWidgetData ({commit, state, getters, rootState}, {val, newWidget}) {
-      let tdid = val ? val.getAttribute('UUID') : ''
+      let tdid = val ? val.UUID : ''
       if (getters.getTdWidget(tdid)) {
         for (let i in newWidget.$data) {
           newWidget[i] = getters.getTdWidget(tdid).data[i]
@@ -60,11 +67,13 @@ const widgets = {
         }
       }
     },
-    upDataTdDataActions ({commit}, {key, value}) {
-      commit('updataTdData', {key, value})
+    upDataTdDataActions ({commit}, arrData) {
+      for (let key in arrData) {
+        commit('updataTdData', {key, value: arrData[key]})
+      }
     },
     initCtrlTdData ({state, commit, getters, rootState}, newWidget) {
-      let tdid = state.currenttd.getAttribute('UUID')
+      let tdid = state.currenttd.UUID
       for (let i in newWidget.$data) {
         newWidget[i] = getters.getTdWidget(tdid).data[i]
       }

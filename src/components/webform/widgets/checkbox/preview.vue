@@ -1,10 +1,7 @@
 <template>
-  <div contenteditable="false" @click.stop>
-    <div>{{fieldName}}aaa</div>
     <el-checkbox-group v-model="checkListVal">
         <el-checkbox v-for="(item, key) in checkList" :key="key" :disabled="item.disabled" :label="item.val" >{{item.label}}</el-checkbox>
     </el-checkbox-group>
-  </div>
 </template>
 
 <script>
@@ -16,7 +13,7 @@ export default {
   // mixins: [dataview],
   data () {
     return {
-      fieldName: '',
+      // fieldName: '',
       checkList: [
         {
           disabled: false,
@@ -49,17 +46,17 @@ export default {
       },
       deep: true // 对象内部的属性监听，也叫深度监听
     },
-    fieldName: {
-      handler: function (val, oldval) {
-        console.log(store.getters.tdWidget, this.fieldName, '---44444444444-------------')
-        // console.log(store.getters.tdWidgetList, '----44444-----')
-        // this.fieldName =
-      },
-      deep: true // 对象内部的属性监听，也叫深度监听
-    },
-    'store.getters.getTdWidget': function (val) {
-      console.log(val)
-    },
+    // widgetFieldName: {
+    //   handler: function (val, oldval) {
+    //     console.log(store.getters.tdWidget, this.widgetFieldName, '---44444444444-------------')
+    //     // console.log(store.getters.tdWidgetList, '----44444-----')
+    //     // this.fieldName =
+    //   },
+    //   deep: true // 对象内部的属性监听，也叫深度监听
+    // },
+    // 'store.getters.getTdWidget': function (val) {
+    //   console.log(val)
+    // },
     'currenttd': {
       handler: function (val, oldval) {
         // this.updataTdWidgetData({val, newWidget: this})

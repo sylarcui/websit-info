@@ -2,11 +2,11 @@
   <el-form ref="form" label-width="80px" label-position="top" size="mini" class="check-ctrl">
     <el-form-item label="字段名称">
       <el-col :span="11">
-        <el-input v-model="fieldName" @blur="inputfun"></el-input>
+        <el-input v-model="widgetFieldName" @blur="widgetFieldNameBlur"></el-input>
       </el-col>
       <el-col :span="2">&nbsp;</el-col>
       <el-col :span="11">
-        <el-input v-model="fieldNamePinyin"></el-input>
+        <el-input v-model="_widgetFieldNamePinyin"></el-input>
       </el-col>
     </el-form-item>
     <el-form-item label="选项设置">
@@ -24,7 +24,7 @@
           <td><el-checkbox :checked="checkListVal.includes(item.val)" @change="defaultChecked($event, item.val)"></el-checkbox></td>
           <td><el-checkbox :checked="item.disabled" name="" @change="item.disabled = !item.disabled"></el-checkbox></td>
           <td>
-            <el-button type="primary" icon="el-icon-plus" v-if="key==0" @click="addCheckeBox"></el-button>
+            <el-button type="primary" icon="el-icon-plus" v-if="key==0" @click="addCheckeBox($event, key)"></el-button>
             <el-button type="primary" icon="el-icon-minus" v-if="key!==0"  @click="delCheckeBox($event, key)"></el-button>
           </td>
         </tr>
@@ -47,29 +47,14 @@ export default {
   data () {
     return {
       checkList: [],
-      fieldName: '',
-      fieldNamePinyin: '',
-      checkListVal: [],
-      form: {
-        name: '',
-        region: '',
-        date1: '',
-        date2: '',
-        delivery: false,
-        type: [],
-        resource: '',
-        desc: '',
-        fieldName: '',
-        fieldNamePinyin: ''
-      }
+      widgetFieldName: '',
+      widgetFieldNamePinyin: '',
+      checkListVal: []
     }
   },
   created () {
-    this.checkList = this.tdWidget.data['checkList']
-    this.fieldName = this.tdWidget.data['fieldName']
-    this.checkListVal = this.tdWidget.data['checkListVal']
     console.log('3-------------')
-    // this.initCtrlTdData(this)
+    this.initCtrlTdData(this)
     console.log(this.tdWidget.data)
   },
   methods: {
@@ -87,12 +72,14 @@ export default {
       }
       console.log(this.tdWidget.data['checkListVal'])
     },
-    addCheckeBox: function (e, v) {
+    addCheckeBox: function () {
+      let key = this.checkList.length
+      console.log(key, this.tdWidget.data['checkListVal'].length)
       this.checkList.push(
         {
           disabled: false,
           label: '默认值',
-          val: ''
+          val: key
         }
       )
       console.log(this.tdWidget.data['checkListVal'])
@@ -106,24 +93,23 @@ export default {
       this.checkList.push('ss')
       console.log(this.tdWidget.data)
     },
-    inputfun (e) {
-      console.log(e.target.value)
-      let fieldNamePinyin = pinyin(e.target.value, {
-        style: pinyin.STYLE_NORMAL, // 设置拼音风格
-        heteronym: false
-      }).join('')
-      this.fieldNamePinyin = fieldNamePinyin
-      this.upDataTdDataActions({
-        key: 'fieldNamePinyin',
-        value: fieldNamePinyin
-      })
-      this.upDataTdDataActions({
-        key: 'fieldName',
-        value: e.target.value
-      })
-    },
-    onSubmit () {
-      console.log('submit!')
+    widgetFieldNameBlur (e) {
+      // console.log(e.target.value)
+      // let fieldNamePinyin = pinyin(this.widgetFieldName, {
+      //   style: pinyin.STYLE_NORMAL, // 设置拼音风格
+      //   heteronym: false
+      // }).join('')
+      // this.widgetFieldNamePinyin = this._widgetFieldNamePinyin
+      this.upDataTdDataActions(
+        {
+          widgetFieldNamePinyin: this._widgetFieldNamePinyin,
+          widgetFieldName: e.target.value
+        }
+      )
+      // this.upDataTdDataActions({
+      //   key: 'widgetFieldName',
+      //   value: e.target.value
+      // })
     },
     ...mapActions([
       'initCtrlTdData',
@@ -138,7 +124,29 @@ export default {
     ...mapGetters([
       'currenttd',
       'tdWidget'
-    ])
+    ]),
+    _widgetFieldNamePinyin: function () {
+      // this.widgetFieldNamePinyin = ''
+      let fieldNamePinyin = pinyin(this.widgetFieldName, {
+        style: pinyin.STYLE_NORMAL, // 设置拼音风格
+        heteronym: false
+      }).join('')
+      // this.widgetFieldNamePinyin = fieldNamePinyin
+      return fieldNamePinyin
+    }
+    // _widgetFieldNamePinyin: function () {
+    //   let fieldNamePinyin = pinyin(this.widgetFieldName, {
+    //     style: pinyin.STYLE_NORMAL, // 设置拼音风格
+    //     heteronym: false
+    //   }).join('')
+    //   this.widgetFieldNamePinyin = fieldNamePinyin
+    //   this.upDataTdDataActions(
+    //     {
+    //       widgetFieldNamePinyin: fieldNamePinyin,
+    //       widgetFieldName: e.target.value
+    //     }
+    //   )
+    // }
     // fieldName: {
     //   get () {
     //     return this.tdWidget.data['fieldName']
@@ -167,12 +175,12 @@ export default {
     //   },
     //   deep: true // 对象内部的属性监听，也叫深度监听
     // }
-    // 'currenttd': {
-    //   handler: function (val, oldval) {
-    //     this.updataTdWidgetData({val, newWidget: this})
-    //   },
-    //   deep: true // 对象内部的属性监听，也叫深度监听
-    // }
+    'currenttd': {
+      handler: function (val, oldval) {
+        this.updataTdWidgetData({val, newWidget: this})
+      },
+      deep: true // 对象内部的属性监听，也叫深度监听
+    }
   } // 以V-model绑定数据时使用的数据变化监测
 }
 </script>

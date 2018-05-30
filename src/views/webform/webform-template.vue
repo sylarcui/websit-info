@@ -359,21 +359,28 @@ export default {
     },
     selectWidget (widgetType) {
       this.widgetName = widgetType
-      if (!this.currenttd.getAttribute('UUID')) {
-        this.currenttd.setAttribute('UUID', UUID.genV4().hexFields[2])
+      // this.currenttd.UUID = ''
+      // if (!this.currenttd.getAttribute('UUID')) {
+      //   this.currenttd.setAttribute('UUID', UUID.genV4().hexFields[2])
+      // }
+      if (!this.currenttd.UUID) {
+        // this.currenttd.setAttribute('UUID', UUID.genV4().hexFields[2])
+        this.currenttd.UUID = UUID.genV4().hexFields[2]
       }
+      console.log([this.currenttd])
       this.addTdCtrlWidgetNmae({
-        tdid: this.currenttd.getAttribute('uuid'),
+        tdid: this.currenttd.UUID,
         CtrlWidget: widgetType
       })
-      console.log([this.currenttd])
-      this.widgetKey = this.currenttd.getAttribute('UUID')
+      this.widgetKey = this.currenttd.UUID
       let currentWidget = new Widget({
         propsData: {
           widgetNmae: widgetType,
-          position: this.currenttd.getAttribute('UUID')
+          position: this.currenttd.UUID
         }
       })
+      this.currenttd.innerHTML = '<br/>'
+      console.log(this.currenttd.firstChild)
       currentWidget.$mount(this.currenttd.firstChild)
       this.$refs.webformSidebar.$emit('insertWidgetCtrl', widgetType, this.widgetKey)
       // console.log(this.getTdWidget(this.currenttd.getAttribute('UUID')), ';;;;;;;;;')
@@ -388,8 +395,8 @@ export default {
       handler: function (val, oldval) {
         console.log(val)
         if (val) {
-          if (val && this.getTdWidget(val.getAttribute('UUID'))) {
-            this.$refs.webformSidebar.$emit('insertWidgetCtrl', this.getTdWidget(val.getAttribute('UUID')).CtrlWidget, this.widgetKey)
+          if (val && this.getTdWidget(val.UUID)) {
+            this.$refs.webformSidebar.$emit('insertWidgetCtrl', this.getTdWidget(val.UUID).CtrlWidget, this.widgetKey)
           } else {
             this.$refs.webformSidebar.$emit('insertWidgetCtrl', '', this.widgetKey)
           }

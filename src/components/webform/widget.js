@@ -4,7 +4,7 @@ import * as widgetsl from './widgets/preview'
 import * as ctrl from './widgets/ctrl'
 // import store from '@/store/'
 const Widget = Vue.extend({
-  template: '<component v-bind:is="widgetNmae"></component>',
+  template: '<div class="widget-shade-container"  contenteditable="false" @click.stop><div class="widget-shade"></div><component v-bind:is="widgetNmae"></component></div>',
   components: widgetsl,
   props: ['widgetNmae', 'position'],
   data: function () {
