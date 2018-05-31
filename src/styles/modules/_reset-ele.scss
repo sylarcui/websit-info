@@ -261,3 +261,10 @@
 .el-button--mini, .el-button--mini.is-round {
   padding: 5px 5px;
 }
+.text-smaller {
+  font-size: rem(12);
+}
+.el-form-item__error{
+  display: block;
+  position: relative;
+}

@@ -1,8 +1,8 @@
 <template>
   <div class="container">
     <slot>Submit</slot>
-    <div v-if="allData.errorIsShow">{{allData.errorTipText}}'4444'</div>
-    <div v-if="allData.explainIsShow">{{allData.explainText}}'sss'</div>
+    <small class="text-smaller el-form-item__error" v-if="allData.errorIsShow">{{allData.errorTipText || '警告文字'}}</small>
+    <small class="text-smaller el-form-item__error" v-if="allData.explainIsShow">{{allData.explainText || '说明文字'}}</small>
   </div>
 </template>
 
@@ -10,6 +10,7 @@
 import store from '@/store/'
 export default {
   name: 'preview-template',
+  // props: ['errorTipText', 'errorIsShow', 'explainIsShow', 'explainText'],
   data: function () {
     return {
       allData: {}
