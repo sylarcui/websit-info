@@ -3,7 +3,9 @@
     <el-tabs v-model="webformAside" type="card">
       <el-tab-pane name="first">
         <span slot="label"><icon :icon="['fal','wrench']"></icon> 控件属性</span>
-        <component :is="currentView"></component>
+        <transition name="el-fade-in-linear">
+          <component :is="currentView"></component>
+        </transition>
         <!--<div ref="widgetCtrl" id="aaa"><div></div></div>-->
       </el-tab-pane>
       <el-tab-pane name="second">
@@ -52,15 +54,18 @@ export default {
   },
   methods: {
     initWidgetCtrl (widgetNmae, position) {
-      if (this.tdWidget) {
-        this.currentView = this.tdWidget.CtrlWidget
+      this.currentView = ''
+      console.log(widgetNmae, position)
+      if (this.getTdWidget(position)) {
+        this.currentView = widgetNmae
       }
     }
   },
   computed: {
     ...mapGetters([
       'currenttd',
-      'tdWidget'
+      'tdWidget',
+      'getTdWidget'
     ])
   },
   components: widgetsl

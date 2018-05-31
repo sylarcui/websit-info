@@ -65,7 +65,7 @@ const widgets = {
       Vue.delete(state.tdWidgetList, tdid)
     },
     setCurrenttd (state, td) {
-      console.log(state, td)
+      console.log(td, 'ssssssssssssssssss')
       Vue.set(state, 'currenttd', td)
     }
   },

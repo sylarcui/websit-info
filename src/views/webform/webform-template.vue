@@ -277,7 +277,7 @@ export default {
             $(editor.el).find('.content-sed').removeClass('content-sed')
             this.setCurrenttd('')
             // this.widgetData.currentTd = ''
-            // this.$refs.webformSidebar.$emit('insertWidgetCtrl', '', this.widgetKey)
+            this.$refs.webformSidebar.$emit('insertWidgetCtrl', '', this.widgetKey)
             this.currentView = true
           },
           'froalaEditor.mouseup': (e, editor, html) => {

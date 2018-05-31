@@ -4,18 +4,16 @@ import * as widgetsl from './widgets/preview'
 import * as ctrl from './widgets/ctrl'
 import store from '@/store/'
 const Widget = Vue.extend({
-  template: '<div class="widget-shade-container"  contenteditable="false" @click.stop><div class="widget-shade"></div>{{isshow}}<component v-bind:is="widgetNmae"></component></div>',
+  template: '<div class="widget-shade-container"  contenteditable="false" @click.stop><div class="widget-shade"></div><component v-bind:is="widgetNmae"></component></div>',
   components: widgetsl,
   props: ['widgetNmae', 'position'],
   data: function () {
     return {
-      isShowPreview: false,
-      isshow: {}
+      isShowPreview: false
     }
   },
   created () {
     console.log(store.getters.tdWidget)
-    this.isshow = store.getters.tdWidget
   },
   methods: {
 
