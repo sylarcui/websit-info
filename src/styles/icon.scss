@@ -1,9 +1,11 @@
+//@import "./fortawesome/scss/fontawesome.scss";
+//@import "./fortawesome/scss/fa-regular.scss";
+//@import "./fortawesome/scss/fa-solid.scss";
+//@import "./fortawesome/scss/fa-brands.scss";
+//@import "./fortawesome/scss/fa-light.scss";
 @import "./fortawesome/scss/fontawesome.scss";
-@import "./fortawesome/scss/fa-regular.scss";
 @import "./fortawesome/scss/fa-solid.scss";
 @import "./fortawesome/scss/fa-brands.scss";
-@import "./fortawesome/scss/fa-light.scss";
-
 
 .user {
   @include fa-icon;

@@ -84,7 +84,6 @@ export default {
   async created () {
     let templateList = await api.template.list()
     this.templateList = templateList.data.articles
-    console.log(this.templateList)
   },
   methods: {
     createForm (id) {

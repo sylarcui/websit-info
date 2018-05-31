@@ -16,8 +16,13 @@ const widgets = {
     addTdCtrlWidgetNmae (state, {tdid, CtrlWidget}) {
       if (!state.tdWidgetList[tdid]) {
         Vue.set(state.tdWidgetList, tdid, {})
+        Vue.set(state.tdWidgetList[tdid], 'CtrlWidget', CtrlWidget)
+      } else {
+        Vue.set(state.tdWidgetList, tdid, {})
+        if (state.tdWidgetList[tdid].CtrlWidget !== CtrlWidget) {
+          Vue.set(state.tdWidgetList[tdid], 'CtrlWidget', CtrlWidget)
+        }
       }
-      Vue.set(state.tdWidgetList[tdid], 'CtrlWidget', CtrlWidget)
     },
     addTdData (state, {tdid, data}) {
       Vue.set(state.tdWidgetList[tdid], 'data', data)
@@ -58,8 +63,10 @@ const widgets = {
     updataTdWidgetData ({commit, state, getters, rootState}, {val, newWidget}) {
       let tdid = val ? val.UUID : ''
       if (getters.getTdWidget(tdid)) {
+        console.log(tdid)
         for (let i in newWidget.$data) {
-          newWidget[i] = getters.getTdWidget(tdid).data[i]
+          // newWidget[i] = getters.getTdWidget(tdid).data[i]
+          Vue.set(newWidget, i, getters.tdWidget.data[i])
         }
       } else {
         for (let i in newWidget.$data) {

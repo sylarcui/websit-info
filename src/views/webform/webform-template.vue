@@ -18,7 +18,7 @@
       <el-tabs type="card" class="header-tab">
         <el-tab-pane v-for="(data, index) in widgetLists" :key="index">
           <span slot="label"><i :class="data.icon"></i> {{data.group}}</span>
-          <ul class="controls-list clearfix" :class="{ disabled: !currenttd }">{{!currenttd}}
+          <ul class="controls-list clearfix" :class="{ disabled: currentView }">{{currentView}}
             <li class="controls" v-for="(item, key) in data.groupList" :key="key" @click.prevent.stop="selectWidget(item.widgetType)" :title="item.name">
               <div class="controls-con">
                 <span class="controls-icon"><icon :icon="item.icon" class="controls-icon-style" fixed-width></icon></span>
@@ -246,6 +246,7 @@ import webformSidebar from './webform-sidebar'
 import $ from 'jquery'
 import UUID from 'uuidjs'
 import { Widget } from '@/components/webform/widget'
+import widgetData from '@/components/webform/widgets/widget-data'
 export default {
   name: 'webformTemplate',
   data () {
@@ -257,7 +258,7 @@ export default {
       widgetKey: '',
       widgetName: '',
       editor: null,
-      // getsed: null,
+      widgetData,
       config: {
         events: {
           'froalaEditor.initialized': (e, editor) => {
@@ -265,7 +266,6 @@ export default {
           },
           // 添加事件，在每次按键按下时，都记录一下最后停留位置
           'froalaEditor.commands.before': (e, editor, html) => {
-            console.log(e, editor, editor.core.isEmpty(), editor.selection.inEditor(), html, !this.currenttd)
             // if (this.currenttd) {
             //   editor.selection.setAtEnd(this.currenttd)
             // } else if (!editor.selection.inEditor() && !this.currenttd) {
@@ -274,20 +274,23 @@ export default {
           },
           // 添加事件，在每次鼠标点击时，都记录一下最后停留位置
           'froalaEditor.mousedown': (e, editor, html) => {
-            console.log(e, editor, $(editor.el).find('.content-sed'))
             $(editor.el).find('.content-sed').removeClass('content-sed')
-            this.setCurrenttd('')
+            // this.setCurrenttd('')
+            this.widgetData.currentTd = ''
+            // this.$refs.webformSidebar.$emit('insertWidgetCtrl', '', this.widgetKey)
+            this.currentView = true
           },
           'froalaEditor.mouseup': (e, editor, html) => {
-            // console.log(e, html, $(html.target).parents('td').length, html.target.nodeName === 'TD')
             if ($(html.target).parents('td').length) {
-              // console.log('222', this.setCurrenttd)
               $(html.target).parents('td').addClass('content-sed')
-              this.setCurrenttd($(html.target).parents('td')[0])
+              // this.setCurrenttd($(html.target).parents('td')[0])
+              this.widgetData.setCurrentTd($(html.target).parents('td')[0])
+              this.currentView = false
             } else if (html.target.nodeName === 'TD') {
-              // console.log('11')
-              this.setCurrenttd(html.target)
+              // this.setCurrenttd(html.target)
+              this.widgetData.setCurrentTd(html.target)
               $(html.target).addClass('content-sed')
+              this.currentView = false
             }
           }
         },
@@ -297,6 +300,7 @@ export default {
         enter: $.FroalaEditor.ENTER_BR,
         htmlAllowComments: true,
         // tableResizer: false,
+        iconsTemplate: 'font_awesome_5',
         pastePlain: true,
         tableCellStyles: {
           class1: 'Class 1',
@@ -322,7 +326,6 @@ export default {
   },
   created () {
     this.widgetLists = widgetLists
-    console.log($.FroalaEditor.DefineIcon('check', { NAME: 'check-square' }))
     $.FroalaEditor.DefineIcon('check', { NAME: 'check-square' })
     $.FroalaEditor.RegisterCommand('check', {
       title: 'check-box',
@@ -337,7 +340,6 @@ export default {
         titleDiv.className = 'page-title'
         let fistNode = froala.firstChild
         froala.insertBefore(titleDiv, fistNode)
-        console.log(froala)
       }
     })
     // this.getsed = () => {
@@ -356,6 +358,7 @@ export default {
     getsed () {
       // this.editor.html.set('')
       // this.editor.html.getSelected()
+      console.log(widgetData.tdWidgetList)
     },
     selectWidget (widgetType) {
       this.widgetName = widgetType
@@ -363,25 +366,23 @@ export default {
       // if (!this.currenttd.getAttribute('UUID')) {
       //   this.currenttd.setAttribute('UUID', UUID.genV4().hexFields[2])
       // }
-      if (!this.currenttd.UUID) {
-        // this.currenttd.setAttribute('UUID', UUID.genV4().hexFields[2])
-        this.currenttd.UUID = UUID.genV4().hexFields[2]
+      if (!this.widgetData.currentTd.getAttribute('UUID')) {
+        this.widgetData.currentTd.setAttribute('UUID', UUID.genV4().hexFields[2])
+        // this.widgetData.currentTd.UUID = UUID.genV4().hexFields[2]
       }
-      console.log([this.currenttd])
-      this.addTdCtrlWidgetNmae({
-        tdid: this.currenttd.UUID,
+      this.widgetData.settdWidget({
+        uuid: this.widgetData.currentTd.getAttribute('UUID'),
         CtrlWidget: widgetType
       })
-      this.widgetKey = this.currenttd.UUID
+      this.widgetKey = this.widgetData.currentTd.getAttribute('UUID')
       let currentWidget = new Widget({
         propsData: {
           widgetNmae: widgetType,
-          position: this.currenttd.UUID
+          position: this.widgetData.currentTd.getAttribute('UUID')
         }
       })
-      this.currenttd.innerHTML = '<br/>'
-      console.log(this.currenttd.firstChild)
-      currentWidget.$mount(this.currenttd.firstChild)
+      widgetData.currentTd.innerHTML = '<br/>'
+      currentWidget.$mount(this.widgetData.currentTd.firstChild)
       this.$refs.webformSidebar.$emit('insertWidgetCtrl', widgetType, this.widgetKey)
       // console.log(this.getTdWidget(this.currenttd.getAttribute('UUID')), ';;;;;;;;;')
     },
@@ -391,12 +392,12 @@ export default {
     ])
   },
   watch: {
-    'currenttd': {
+    'widgetData.currentTd': {
       handler: function (val, oldval) {
-        console.log(val)
+        console.log('787878787', this.widgetData)
         if (val) {
-          if (val && this.getTdWidget(val.UUID)) {
-            this.$refs.webformSidebar.$emit('insertWidgetCtrl', this.getTdWidget(val.UUID).CtrlWidget, this.widgetKey)
+          if (val && this.widgetData.currentTd.getAttribute('UUID')) {
+            this.$refs.webformSidebar.$emit('insertWidgetCtrl', this.widgetData.gettdWidget(val.getAttribute('UUID')).CtrlWidget, this.widgetKey)
           } else {
             this.$refs.webformSidebar.$emit('insertWidgetCtrl', '', this.widgetKey)
           }

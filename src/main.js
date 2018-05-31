@@ -25,7 +25,8 @@ import './lib/webformeditor/css/froala_editor.pkgd.min.css'
 import './lib/webformeditor/css/froala_style.min.css'
 import VueFroala from 'vue-froala-wysiwyg'
 
-import 'font-awesome/css/font-awesome.css'
+// import 'font-awesome/css/font-awesome.css'
+import './styles/fortawesome/css/fontawesome-all.css'
 
 import $ from 'jquery'
 Vue.use(VueFroala)

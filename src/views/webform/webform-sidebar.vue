@@ -1,5 +1,5 @@
 <template>
-  <el-aside width="250px"  class="webform-aside">
+  <el-aside width="300px"  class="webform-aside">
     <el-tabs v-model="webformAside" type="card">
       <el-tab-pane name="first">
         <span slot="label"><icon :icon="['fal','wrench']"></icon> 控件属性</span>
@@ -15,7 +15,8 @@
 
 <script>
 import * as widgetsl from '@/components/webform/widgets/ctrl'
-// import {Ctrl} from '@/components/webform/widget'
+import widgetData from '@/components/webform/widgets/widget-data'
+import {mapGetters} from 'vuex'
 export default {
   name: 'webformSidebar',
   // props: ['currentView'],
@@ -23,7 +24,8 @@ export default {
     return {
       webformAside: 'first',
       widgetLists: {},
-      currentView: ''
+      currentView: '',
+      widgetData
     }
   },
   created () {
@@ -32,19 +34,34 @@ export default {
   },
   mounted () {
     this.$on('insertWidgetCtrl', (widgetNmae, position) => {
+      this.currentView = ''
       this.initWidgetCtrl(widgetNmae, position)
     })
   },
   watch: {
-    // currentView (val, oldVal) {
-    //   // console.log('new: %s, old: %s', val, oldVal)
-    //   console.log(this)
+    // 'currenttd': {
+    //   handler: function (val, oldval) {
+    //     if (this.tdWidget) {
+    //       this.currentView = this.tdWidget.CtrlWidget
+    //     }
+    //     console.log(val, '======>')
+    //     // this.updataTdWidgetData({val, newWidget: this})
+    //   },
+    //   deep: true // 对象内部的属性监听，也叫深度监听
     // }
   },
   methods: {
     initWidgetCtrl (widgetNmae, position) {
-      this.currentView = widgetNmae
+      if (this.widgetData.gettdWidget()) {
+        this.currentView = this.widgetData.gettdWidget().CtrlWidget
+      }
     }
+  },
+  computed: {
+    ...mapGetters([
+      'currenttd',
+      'tdWidget'
+    ])
   },
   components: widgetsl
 }
@@ -61,6 +78,8 @@ export default {
     }
     .el-tab-pane {
       padding: rem(10);
+      overflow: auto;
+      height: 100%;
     }
     .el-tabs__content {
       /*height: calc(100% - 2.25rem);*/

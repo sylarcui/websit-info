@@ -2,11 +2,11 @@
   <el-form ref="form" label-width="80px" label-position="top" size="mini" class="check-ctrl">
     <el-form-item label="字段名称">
       <el-col :span="11">
-        <el-input v-model="widgetFieldName" @blur="widgetFieldNameBlur"></el-input>
+        <el-input v-model="widgetFieldName" @blur="widgetFieldNameBlur" placeholder="必须中文名称"></el-input>
       </el-col>
       <el-col :span="2">&nbsp;</el-col>
       <el-col :span="11">
-        <el-input v-model="_widgetFieldNamePinyin"></el-input>
+        <el-input v-model="_widgetFieldNamePinyin"  placeholder="必须英文名称"></el-input>
       </el-col>
     </el-form-item>
     <el-form-item label="选项设置">
@@ -21,14 +21,56 @@
         <tr v-for="(item, key) in checkList" :key="key">
           <td><el-input v-model="item.label"></el-input></td>
           <td><el-input v-model="item.val"></el-input></td>
-          <td><el-checkbox :checked="checkListVal.includes(item.val)" @change="defaultChecked($event, item.val)"></el-checkbox></td>
-          <td><el-checkbox :checked="item.disabled" name="" @change="item.disabled = !item.disabled"></el-checkbox></td>
+          <td><el-checkbox v-model="item.checkedStatus"></el-checkbox></td>
+          <td><el-checkbox v-model="item.disabled"></el-checkbox></td>
           <td>
-            <el-button type="primary" icon="el-icon-plus" v-if="key==0" @click="addCheckeBox($event, key)"></el-button>
-            <el-button type="primary" icon="el-icon-minus" v-if="key!==0"  @click="delCheckeBox($event, key)"></el-button>
+            <el-button-group>
+              <el-button type="primary" icon="fal fa-long-arrow-up" @click="upRecord(key)"></el-button>
+              <el-button type="primary" icon="fal fa-long-arrow-down" @click="downRecord(key)"></el-button>
+              <el-button type="primary" icon="el-icon-plus" v-if="key==0" @click="addCheckeBox($event, key)"></el-button>
+              <el-button type="primary" icon="el-icon-minus" v-if="key!==0"  @click="delCheckeBox($event, item.val)"></el-button>
+            </el-button-group>
           </td>
         </tr>
       </table>
+    </el-form-item>
+    <el-form-item>
+      <el-col :span="11">
+        <el-form-item  label="最少选中">
+          <el-input-number size="mini" :min="0" :max="checkList.length" v-model="minNum" controls-position="right" @change="changeMinNum"></el-input-number>
+        </el-form-item>
+      </el-col>
+      <el-col :span="2">&nbsp;</el-col>
+      <el-col :span="11">
+        <el-form-item  label="最多选中">
+          <el-input-number size="mini" :min="minNum" :max="checkList.length"  v-model="maxNum" controls-position="right" @change="changeMaxNum"></el-input-number>
+        </el-form-item>
+      </el-col>
+    </el-form-item>
+    <el-form-item  label="错误提示设置">
+      <el-col :span="6">
+        <el-form-item  label="开启">
+          <el-checkbox v-model="errorIsShow" @change="changeErrorIsShow"></el-checkbox>
+        </el-form-item>
+      </el-col>
+      <!--<el-col :span="2">&nbsp;</el-col>-->
+      <el-col :span="18">
+        <el-form-item  label="提示文字">
+            <el-input v-model="errorTipText" placeholder="必须中文名称"></el-input>
+        </el-form-item>
+      </el-col>
+    </el-form-item>
+    <el-form-item  label="说明文字">
+      <el-col :span="6">
+        <el-form-item  label="开启">
+          <el-checkbox v-model="explainIsShow" @change="changeExplainIsShow"></el-checkbox>
+        </el-form-item>
+      </el-col>
+      <el-col :span="18">
+        <el-form-item  label="提示文字">
+          <el-input v-model="explainText" placeholder="必须中文名称"></el-input>
+        </el-form-item>
+      </el-col>
     </el-form-item>
     <el-form-item>
       <el-button type="primary" @click="add">立即创建</el-button>
@@ -40,76 +82,102 @@
 <script>
 import {mapGetters, mapActions, mapMutations} from 'vuex'
 import pinyin from 'pinyin'
-// import dataview from './index'
+import ctrlMixins from '../ctrl-mixins'
+import Utils from '@/Utils/'
+import UUID from 'uuidjs'
+// import Vue from 'vue'
 export default {
   name: 'ctrl',
-  // mixins: [dataview],
+  mixins: [ctrlMixins],
   data () {
     return {
       checkList: [],
       widgetFieldName: '',
+      widgetFieldName2: '',
       widgetFieldNamePinyin: '',
-      checkListVal: []
+      errorTipText: '',
+      explainText: '',
+      explainIsShow: true,
+      errorIsShow: false,
+      checkListVal: [],
+      minNum: 1,
+      maxNum: 2
     }
   },
   created () {
-    console.log('3-------------')
-    this.initCtrlTdData(this)
-    console.log(this.tdWidget.data)
+    console.log(Utils)
+    // this.errorIsShow = this.widgetData.gettdWidget().data.errorIsShow
   },
   methods: {
-    defaultChecked: function (e, v) {
-      if (e) {
-        if (!this.checkListVal.includes(v)) {
-          this.checkListVal.push(v)
-        }
-      } else {
-        this.checkListVal.map((m, i) => {
-          if (m === v) {
-            this.checkListVal.splice(i, 1)
-          }
-        })
-      }
-      console.log(this.tdWidget.data['checkListVal'])
+    changeMinNum (e) {
+      this.updateFun({minNum: e})
     },
-    addCheckeBox: function () {
-      let key = this.checkList.length
-      console.log(key, this.tdWidget.data['checkListVal'].length)
+    changeErrorIsShow (e) {
+      this.updateFun({errorIsShow: e})
+    },
+    changeExplainIsShow (e) {
+      this.updateFun({explainIsShow: e})
+    },
+    changeMaxNum (e) {
+      this.updateFun({maxNum: e})
+    },
+    upRecord (i) {
+      Utils.upRecord(this.checkList, i)
+    },
+    downRecord (i) {
+      Utils.downRecord(this.checkList, i)
+    },
+    addCheckeBox: function (e, k) {
+      // let key = this.checkList.length
+      // let initNum = this.checkList.length
+      // let _key = parseInt(_.toNumber(_.maxBy(this.checkList, 'val').val)) + 1
+      // let key = !_key ? initNum + 1 : _key + 1
+      // console.log(_key)
       this.checkList.push(
         {
           disabled: false,
-          label: '默认值',
-          val: key
+          label: '选项一',
+          val: `${UUID.genV4().hexFields[2]}`,
+          checkedStatus: false
         }
       )
-      console.log(this.tdWidget.data['checkListVal'])
     },
-    delCheckeBox: function (e, i) {
-      console.log(i)
-      this.checkList.splice(i, 1)
-      console.log(this.tdWidget.data['checkListVal'])
+    delCheckeBox: function (e, val) {
+      this.checkList.map((m, index) => {
+        if (m.val === val) {
+          this.checkList.splice(index, 1)
+        }
+      })
+      this.checkListVal.map((m, i) => {
+        if (m === val) {
+          this.checkListVal.splice(i, 1)
+        }
+      })
+      // _.remove(this.checkListVal, function (n) {
+      //   return n !== val
+      // })
+      // this.tdWidget.data['checkListVal'] = this.tdWidget.data['checkListVal'].filter(m => m !== i)
+      // this.checkList.splice(i, 1)
     },
     add () {
-      this.checkList.push('ss')
-      console.log(this.tdWidget.data)
+      console.log(this.widgetData)
     },
     widgetFieldNameBlur (e) {
-      // console.log(e.target.value)
-      // let fieldNamePinyin = pinyin(this.widgetFieldName, {
-      //   style: pinyin.STYLE_NORMAL, // 设置拼音风格
-      //   heteronym: false
-      // }).join('')
-      // this.widgetFieldNamePinyin = this._widgetFieldNamePinyin
-      this.upDataTdDataActions(
+      this.updateFun(
         {
           widgetFieldNamePinyin: this._widgetFieldNamePinyin,
           widgetFieldName: e.target.value
         }
       )
-      // this.upDataTdDataActions({
-      //   key: 'widgetFieldName',
-      //   value: e.target.value
-      // })
+      // this.updateFun('widgetFieldNamePinyin', this._widgetFieldNamePinyin)
+      // this.widgetData.gettdWidget().data['widgetFieldNamePinyin'] = this._widgetFieldNamePinyin
+      // this.widgetData.gettdWidget().data['widgetFieldName'] = this.widgetFieldName
+      // this.upDataTdDataActions(
+      //   {
+      //     widgetFieldNamePinyin: this._widgetFieldNamePinyin,
+      //     widgetFieldName: e.target.value
+      //   }
+      // )
     },
     ...mapActions([
       'initCtrlTdData',
@@ -126,62 +194,15 @@ export default {
       'tdWidget'
     ]),
     _widgetFieldNamePinyin: function () {
-      // this.widgetFieldNamePinyin = ''
       let fieldNamePinyin = pinyin(this.widgetFieldName, {
         style: pinyin.STYLE_NORMAL, // 设置拼音风格
         heteronym: false
       }).join('')
-      // this.widgetFieldNamePinyin = fieldNamePinyin
       return fieldNamePinyin
     }
-    // _widgetFieldNamePinyin: function () {
-    //   let fieldNamePinyin = pinyin(this.widgetFieldName, {
-    //     style: pinyin.STYLE_NORMAL, // 设置拼音风格
-    //     heteronym: false
-    //   }).join('')
-    //   this.widgetFieldNamePinyin = fieldNamePinyin
-    //   this.upDataTdDataActions(
-    //     {
-    //       widgetFieldNamePinyin: fieldNamePinyin,
-    //       widgetFieldName: e.target.value
-    //     }
-    //   )
-    // }
-    // fieldName: {
-    //   get () {
-    //     return this.tdWidget.data['fieldName']
-    //   },
-    //   set (value) {
-    //     let fieldNamePinyin = pinyin(value, {
-    //       style: pinyin.STYLE_NORMAL, // 设置拼音风格
-    //       heteronym: false
-    //     }).join('')
-    //     this.fieldNamePinyin = fieldNamePinyin
-    //     // this.updataTdData({
-    //     //   key: 'fieldName',
-    //     //   value
-    //     // })
-    //   }
-    // }
   },
   watch: {
-    // 'form.fieldName': {
-    //   handler: function (val, oldval) {
-    //     let fieldNamePinyin = pinyin(val, {
-    //       style: pinyin.STYLE_NORMAL, // 设置拼音风格
-    //       heteronym: false
-    //     }).join('')
-    //     this.form.fieldNamePinyin = fieldNamePinyin
-    //   },
-    //   deep: true // 对象内部的属性监听，也叫深度监听
-    // }
-    'currenttd': {
-      handler: function (val, oldval) {
-        this.updataTdWidgetData({val, newWidget: this})
-      },
-      deep: true // 对象内部的属性监听，也叫深度监听
-    }
-  } // 以V-model绑定数据时使用的数据变化监测
+  }
 }
 </script>
 <style lang="scss">

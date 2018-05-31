@@ -36,9 +36,7 @@ const Ctrl = Vue.extend({
     }
   },
   created () {
-    console.log(this.position)
     // store.commit('addTdCtrlWidget', {tdid: this.position, CtrlWidget: this})
-    // console.log(store.getters.getTdWidget(this.position), '90909090909090909')
   },
   methods: {
 
