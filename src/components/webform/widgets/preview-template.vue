@@ -8,6 +8,7 @@
 </template>
 
 <script>
+import store from '@/store/'
 import widgetData from './widget-data'
 import Vue from 'vue'
 import _ from 'lodash'
@@ -25,35 +26,26 @@ export default {
   },
   created () {
     console.log('======>11111111111111')
-    // let tdid = this.widgetData.gettdWidget()
-    // Object.assign(this.widgetData.gettdWidget().data, {
-    //   errorTipText: '',
-    //   errorIsShow: false,
-    //   explainIsShow: false,
-    //   explainText: ''
-    // })
-    // this.errorTipText = this.widgetData.gettdWidget().data.errorTipText
-    // this.errorIsShow = this.widgetData.gettdWidget().data.errorIsShow
-    // this.explainIsShow = this.widgetData.gettdWidget().data.explainIsShow
-    // this.explainText = this.widgetData.gettdWidget().data.explainText
-    // this.a = this.widgetData.gettdWidget().data.errorIsShow
-    let tdid = this.widgetData.currentTd.getAttribute('UUID')
-    let dataArr = Object.keys(this.$data).filter(a => a !== 'widgetData')
-    // let data = _.cloneDeep(newWidget.$data)
-    // Vue.set(this.widgetData.tdWidgetList[tdid], 'data', {
-    //   widgetFieldName: '',
-    //   widgetFieldNamePinyin: ''
-    // })
+    let tdid = store.getters.currenttd.getAttribute('UUID')
+    let dataArr = Object.keys(this.$data)
     dataArr.map((d) => {
-      if (this.widgetData.gettdWidget().data[d]) {
-        this[d] = this.widgetData.gettdWidget().data[d]
+      if (store.getters.tdWidget.data.hasOwnProperty(d)) {
+        this[d] = store.getters.tdWidgetList[tdid].data[d]
       } else {
         let data = _.cloneDeep(this[d])
-        Vue.set(this.widgetData.tdWidgetList[tdid].data, d, data)
-        this[d] = this.widgetData.gettdWidget().data[d]
+        store.dispatch('upDataTdDataActions', {key: d, data})
+        this[d] = store.getters.tdWidgetList[tdid].data[d]
       }
     })
-  }
+  },
+  watch: {
+    'store.getters.currenttd': {
+      handler: function (val, oldval) {
+       console.log(val)
+      },
+      deep: true // 对象内部的属性监听，也叫深度监听
+    }
+  } // 以V-model绑定数据时使用的数据变化监测
 }
 </script>
 

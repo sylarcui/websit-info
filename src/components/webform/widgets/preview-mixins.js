@@ -1,4 +1,4 @@
-// import store from '@/store/'
+import store from '@/store/'
 import widgetData from './widget-data'
 import _ from 'lodash'
 import Vue from 'vue'
@@ -9,8 +9,8 @@ const previewMixins = {
       widgetFieldName: '',
       widgetFieldNamePinyin: '',
       errorTipText: '',
-      errorIsShow: false,
-      explainIsShow: false,
+      // errorIsShow: false,
+      // explainIsShow: false,
       explainText: ''
     }
   },
@@ -25,17 +25,21 @@ const previewMixins = {
     //   widgetFieldName: '1111',
     //   widgetFieldNamePinyin: '1111'
     // }
-    let tdid = this.widgetData.currentTd.getAttribute('UUID')
-    let dataArr = Object.keys(this.$data).filter(a => a !== 'widgetData')
+    let tdid = store.getters.currenttd.getAttribute('UUID')
+    let dataArr = Object.keys(this.$data)
     // let data = _.cloneDeep(newWidget.$data)
-    Vue.set(this.widgetData.tdWidgetList[tdid], 'data', {})
+    // Vue.set(this.widgetData.tdWidgetList[tdid], 'data', {})
+    // Vue.set(store.getters.tdWidgetList[tdid], 'data', {})
+    store.commit('addTdDataInit')
     dataArr.map((d) => {
-      if (this.widgetData.gettdWidget().data[d]) {
-        this[d] = this.widgetData.gettdWidget().data[d]
+      if (store.getters.tdWidget.data.hasOwnProperty(d)) {
+        this[d] = store.getters.tdWidgetList[tdid].data[d]
       } else {
+        console.log(this[d])
         let data = _.cloneDeep(this[d])
-        Vue.set(this.widgetData.tdWidgetList[tdid].data, d, data)
-        this[d] = this.widgetData.gettdWidget().data[d]
+        // Vue.set(store.getters.tdWidgetList[tdid].data, d, data)
+        store.dispatch('upDataTdDataActions', {key: d, data})
+        this[d] = store.getters.tdWidgetList[tdid].data[d]
       }
     })
     // // Object.assign(newWidget.$data, _fieldNameObj)

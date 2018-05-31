@@ -275,20 +275,20 @@ export default {
           // 添加事件，在每次鼠标点击时，都记录一下最后停留位置
           'froalaEditor.mousedown': (e, editor, html) => {
             $(editor.el).find('.content-sed').removeClass('content-sed')
-            // this.setCurrenttd('')
-            this.widgetData.currentTd = ''
+            this.setCurrenttd('')
+            // this.widgetData.currentTd = ''
             // this.$refs.webformSidebar.$emit('insertWidgetCtrl', '', this.widgetKey)
             this.currentView = true
           },
           'froalaEditor.mouseup': (e, editor, html) => {
             if ($(html.target).parents('td').length) {
               $(html.target).parents('td').addClass('content-sed')
-              // this.setCurrenttd($(html.target).parents('td')[0])
-              this.widgetData.setCurrentTd($(html.target).parents('td')[0])
+              this.setCurrenttd($(html.target).parents('td')[0])
+              // this.widgetData.setCurrentTd($(html.target).parents('td')[0])
               this.currentView = false
             } else if (html.target.nodeName === 'TD') {
-              // this.setCurrenttd(html.target)
-              this.widgetData.setCurrentTd(html.target)
+              this.setCurrenttd(html.target)
+              // this.widgetData.setCurrentTd(html.target)
               $(html.target).addClass('content-sed')
               this.currentView = false
             }
@@ -362,27 +362,28 @@ export default {
     },
     selectWidget (widgetType) {
       this.widgetName = widgetType
+      console.log(this.currenttd)
       // this.currenttd.UUID = ''
-      // if (!this.currenttd.getAttribute('UUID')) {
-      //   this.currenttd.setAttribute('UUID', UUID.genV4().hexFields[2])
-      // }
-      if (!this.widgetData.currentTd.getAttribute('UUID')) {
-        this.widgetData.currentTd.setAttribute('UUID', UUID.genV4().hexFields[2])
-        // this.widgetData.currentTd.UUID = UUID.genV4().hexFields[2]
+      if (!this.currenttd.getAttribute('UUID')) {
+        this.currenttd.setAttribute('UUID', UUID.genV4().hexFields[2])
       }
-      this.widgetData.settdWidget({
-        uuid: this.widgetData.currentTd.getAttribute('UUID'),
+      // if (!this.widgetData.currentTd.getAttribute('UUID')) {
+      //   this.widgetData.currentTd.setAttribute('UUID', UUID.genV4().hexFields[2])
+      //   // this.widgetData.currentTd.UUID = UUID.genV4().hexFields[2]
+      // }
+      this.addTdCtrlWidgetNmae({
+        uuid: this.currenttd.getAttribute('UUID'),
         CtrlWidget: widgetType
       })
-      this.widgetKey = this.widgetData.currentTd.getAttribute('UUID')
+      this.widgetKey = this.currenttd.getAttribute('UUID')
       let currentWidget = new Widget({
         propsData: {
           widgetNmae: widgetType,
-          position: this.widgetData.currentTd.getAttribute('UUID')
+          position: this.currenttd.getAttribute('UUID')
         }
       })
-      widgetData.currentTd.innerHTML = '<br/>'
-      currentWidget.$mount(this.widgetData.currentTd.firstChild)
+      this.currenttd.innerHTML = '<br/>'
+      currentWidget.$mount(this.currenttd.firstChild)
       this.$refs.webformSidebar.$emit('insertWidgetCtrl', widgetType, this.widgetKey)
       // console.log(this.getTdWidget(this.currenttd.getAttribute('UUID')), ';;;;;;;;;')
     },
@@ -392,12 +393,12 @@ export default {
     ])
   },
   watch: {
-    'widgetData.currentTd': {
+    'currenttd': {
       handler: function (val, oldval) {
         console.log('787878787', this.widgetData)
         if (val) {
-          if (val && this.widgetData.currentTd.getAttribute('UUID')) {
-            this.$refs.webformSidebar.$emit('insertWidgetCtrl', this.widgetData.gettdWidget(val.getAttribute('UUID')).CtrlWidget, this.widgetKey)
+          if (val && this.currenttd.getAttribute('UUID')) {
+            this.$refs.webformSidebar.$emit('insertWidgetCtrl', this.getTdWidget(val.getAttribute('UUID')).CtrlWidget, this.widgetKey)
           } else {
             this.$refs.webformSidebar.$emit('insertWidgetCtrl', '', this.widgetKey)
           }

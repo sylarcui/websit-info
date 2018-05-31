@@ -1,10 +1,11 @@
 <template>
     <!--<el-checkbox-group v-model="checkListVal">-->
-  <previewTemplate>
+  <div>
+    {{explainIsShow}}{{errorIsShow}}{{maxNum}}
     <el-checkbox v-for="(item, key) in checkList" :key="key" :disabled="item.disabled" v-model="item.checkedStatus" :label="item.val" >
       {{item.label}}
     </el-checkbox>
-  </previewTemplate>
+  </div>
     <!--</el-checkbox-group>-->
 </template>
 
@@ -20,8 +21,8 @@ export default {
       // fieldName: '',
       // errorTipText: '',
       // explainText: '',
-      // explainIsShow: false,
-      // errorIsShow: false,
+      explainIsShow: false,
+      errorIsShow: false,
       checkList: [
         {
           disabled: false,
@@ -47,6 +48,12 @@ export default {
   methods: {
   },
   watch: {
+    'errorIsShow': {
+      handler: function (val, oldval) {
+        console.log(val)
+      },
+      deep: true // 对象内部的属性监听，也叫深度监听
+    }
   }, // 以V-model绑定数据时使用的数据变化监测
   components: {
     previewTemplate

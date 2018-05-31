@@ -2,21 +2,32 @@
 import Vue from 'vue'
 import * as widgetsl from './widgets/preview'
 import * as ctrl from './widgets/ctrl'
-// import store from '@/store/'
+import store from '@/store/'
 const Widget = Vue.extend({
-  template: '<div class="widget-shade-container"  contenteditable="false" @click.stop><div class="widget-shade"></div><component v-bind:is="widgetNmae"></component></div>',
+  template: '<div class="widget-shade-container"  contenteditable="false" @click.stop><div class="widget-shade"></div>{{isshow}}<component v-bind:is="widgetNmae"></component></div>',
   components: widgetsl,
   props: ['widgetNmae', 'position'],
   data: function () {
     return {
-      isShowPreview: false
+      isShowPreview: false,
+      isshow: {}
     }
   },
   created () {
+    console.log(store.getters.tdWidget)
+    this.isshow = store.getters.tdWidget
   },
   methods: {
 
   },
+  watch: {
+    'store.getters.tdWidget': {
+      handler: function (val, oldval) {
+        console.log(val)
+      },
+      deep: true // 对象内部的属性监听，也叫深度监听
+    }
+  }, // 以V-model绑定数据时使用的数据变化监测
   computed: {
 
   },

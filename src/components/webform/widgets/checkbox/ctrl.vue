@@ -28,7 +28,7 @@
               <el-button type="primary" icon="fal fa-long-arrow-up" @click="upRecord(key)"></el-button>
               <el-button type="primary" icon="fal fa-long-arrow-down" @click="downRecord(key)"></el-button>
               <el-button type="primary" icon="el-icon-plus" v-if="key==0" @click="addCheckeBox($event, key)"></el-button>
-              <el-button type="primary" icon="el-icon-minus" v-if="key!==0"  @click="delCheckeBox($event, item.val)"></el-button>
+              <el-button type="primary" icon="el-icon-minus" v-if="key!==0"  @click="delCheckeBox($event, item)"></el-button>
             </el-button-group>
           </td>
         </tr>
@@ -110,16 +110,19 @@ export default {
   },
   methods: {
     changeMinNum (e) {
-      this.updateFun({minNum: e})
+      // this.updateFun({minNum: e})
+      this.upDataTdDatasActions({minNum: e})
     },
     changeErrorIsShow (e) {
-      this.updateFun({errorIsShow: e})
+      // this.updateFun({errorIsShow: e})
+      this.upDataTdDatasActions({errorIsShow: e})
     },
     changeExplainIsShow (e) {
-      this.updateFun({explainIsShow: e})
+      // this.updateFun({explainIsShow: e})
+      this.upDataTdDatasActions({explainIsShow: e})
     },
     changeMaxNum (e) {
-      this.updateFun({maxNum: e})
+      this.upDataTdDatasActions({minNum: e})
     },
     upRecord (i) {
       Utils.upRecord(this.checkList, i)
@@ -144,15 +147,15 @@ export default {
     },
     delCheckeBox: function (e, val) {
       this.checkList.map((m, index) => {
-        if (m.val === val) {
+        if (m === val) {
           this.checkList.splice(index, 1)
         }
       })
-      this.checkListVal.map((m, i) => {
-        if (m === val) {
-          this.checkListVal.splice(i, 1)
-        }
-      })
+      // this.checkListVal.map((m, i) => {
+      //   if (m === val) {
+      //     this.checkListVal.splice(i, 1)
+      //   }
+      // })
       // _.remove(this.checkListVal, function (n) {
       //   return n !== val
       // })
@@ -160,29 +163,32 @@ export default {
       // this.checkList.splice(i, 1)
     },
     add () {
-      console.log(this.widgetData)
+      console.log(this.tdWidget)
     },
     widgetFieldNameBlur (e) {
-      this.updateFun(
-        {
-          widgetFieldNamePinyin: this._widgetFieldNamePinyin,
-          widgetFieldName: e.target.value
-        }
-      )
-      // this.updateFun('widgetFieldNamePinyin', this._widgetFieldNamePinyin)
-      // this.widgetData.gettdWidget().data['widgetFieldNamePinyin'] = this._widgetFieldNamePinyin
-      // this.widgetData.gettdWidget().data['widgetFieldName'] = this.widgetFieldName
-      // this.upDataTdDataActions(
+      // this.widgetFieldName = e.target.value
+      // this.widgetFieldNamePinyin = this._widgetFieldNamePinyin
+      // this.updateFun(
       //   {
       //     widgetFieldNamePinyin: this._widgetFieldNamePinyin,
       //     widgetFieldName: e.target.value
       //   }
       // )
+      // this.updateFun('widgetFieldNamePinyin', this._widgetFieldNamePinyin)
+      // this.widgetData.gettdWidget().data['widgetFieldNamePinyin'] = this._widgetFieldNamePinyin
+      // this.widgetData.gettdWidget().data['widgetFieldName'] = this.widgetFieldName
+      this.upDataTdDatasActions(
+        {
+          widgetFieldNamePinyin: this._widgetFieldNamePinyin,
+          widgetFieldName: e.target.value
+        }
+      )
     },
     ...mapActions([
       'initCtrlTdData',
       'updataTdWidgetData',
-      'upDataTdDataActions'
+      'upDataTdDataActions',
+      'upDataTdDatasActions'
     ]),
     ...mapMutations([
       'updataTdData'

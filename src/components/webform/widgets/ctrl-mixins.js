@@ -1,9 +1,10 @@
 import _widgetData from './widget-data'
 import Vue from 'vue'
+import store from '@/store/'
 const ctrlMixins = {
   data: function () {
     return {
-      widgetData: _widgetData
+      // widgetData: _widgetData
     }
   },
   created () {
@@ -11,22 +12,20 @@ const ctrlMixins = {
     // this.initTdNewWidgetData({newWidget: this})
     // store.dispatch('initCtrlTdData', this)
     // this.initCtrlTdData(this)
-    let dataArr = Object.keys(this.$data).filter(a => a !== 'widgetData')
-    console.log(dataArr)
+    let dataArr = Object.keys(this.$data)
+    // console.log(dataArr)
     dataArr.map((d) => {
-      if (this.widgetData.gettdWidget().data.hasOwnProperty(d)) {
-        this[d] = this.widgetData.gettdWidget().data[d]
+      if (store.getters.tdWidget.data.hasOwnProperty(d)) {
+        this[d] = store.getters.tdWidget.data[d]
       }
-      console.log('explainIsShow', d, this[d], this.widgetData.gettdWidget().data[d])
     })
-    console.log(this.widgetData.gettdWidget().data, this, 'jjj')
   },
   methods: {
-    updateFun (objKey) {
-      for (let i in objKey) {
-        Vue.set(this.widgetData.gettdWidget().data, i, objKey[i])
-      }
-    }
+    // updateFun (objKey) {
+    //   for (let i in objKey) {
+    //     Vue.set(this.widgetData.gettdWidget().data, i, objKey[i])
+    //   }
+    // }
   },
   watch: {
     // 'form.fieldName': {
@@ -39,13 +38,14 @@ const ctrlMixins = {
     //   },
     //   deep: true // 对象内部的属性监听，也叫深度监听
     // }
-    'widgetData.currentTd': {
+    'currenttd': {
       handler: function (val, oldval) {
         if (val) {
-          let dataArr = Object.keys(this.$data).filter(a => a !== 'widgetData')
+          let dataArr = Object.keys(this.$data)
+          // console.log(dataArr)
           dataArr.map((d) => {
-            if (this.widgetData.gettdWidget().data[d]) {
-              this[d] = this.widgetData.gettdWidget().data[d]
+            if (store.getters.tdWidget.data.hasOwnProperty(d)) {
+              this[d] = store.getters.tdWidget.data[d]
             }
           })
         }

@@ -52,8 +52,8 @@ export default {
   },
   methods: {
     initWidgetCtrl (widgetNmae, position) {
-      if (this.widgetData.gettdWidget()) {
-        this.currentView = this.widgetData.gettdWidget().CtrlWidget
+      if (this.tdWidget) {
+        this.currentView = this.tdWidget.CtrlWidget
       }
     }
   },
