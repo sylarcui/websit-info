@@ -221,7 +221,25 @@
           <froala :tag="'div'" ref="froala" :config="config">
             <table width="100%">
               <tr>
-                <td></td>
+                <td>
+                  <table width="100%">
+                  <tr>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                  </tr>
+                    <tr>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                  </tr>
+                    <tr>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                  </tr>
+                </table>
+                </td>
                 <td></td>
                 <td></td>
               </tr>
@@ -233,7 +251,7 @@
           <!--</froala>-->
         </div>
       </el-main>
-      <webformSidebar ref="webformSidebar"></webformSidebar>
+      <webformSidebar ref="webformSidebar" :froala="froalaRef"></webformSidebar>
     </el-container>
   </el-container>
 </template>
@@ -259,6 +277,7 @@ export default {
       widgetName: '',
       editor: null,
       widgetData,
+      froalaRef: '',
       config: {
         events: {
           'froalaEditor.initialized': (e, editor) => {
@@ -351,6 +370,8 @@ export default {
   },
   mounted: function () {
     this.$nextTick(() => {
+      this.froalaRef = this.$refs.froala
+      console.log(this.froalaRef, '------------->')
       // console.log($.FroalaEditor.DefineIcon('check', { NAME: 'check-square' }))
     })
   },
@@ -371,7 +392,7 @@ export default {
       //   this.widgetData.currentTd.setAttribute('UUID', UUID.genV4().hexFields[2])
       //   // this.widgetData.currentTd.UUID = UUID.genV4().hexFields[2]
       // }
-      this.addTdCtrlWidgetNmae({
+      this.addTdCtrlWidgetName({
         uuid: this.currenttd.getAttribute('UUID'),
         CtrlWidget: widgetType
       })
@@ -388,7 +409,7 @@ export default {
       // console.log(this.getTdWidget(this.currenttd.getAttribute('UUID')), ';;;;;;;;;')
     },
     ...mapMutations([
-      'addTdCtrlWidgetNmae',
+      'addTdCtrlWidgetName',
       'setCurrenttd'
     ])
   },
@@ -397,8 +418,11 @@ export default {
       handler: function (val, oldval) {
         console.log('787878787', this.widgetData)
         if (val) {
+          this.$refs.webformSidebar.$emit('insertWidgetCtrl', '', this.widgetKey)
           if (val && this.currenttd.getAttribute('UUID')) {
-            this.$refs.webformSidebar.$emit('insertWidgetCtrl', this.getTdWidget(val.getAttribute('UUID')).CtrlWidget, this.widgetKey)
+            if (this.tdWidget) {
+              this.$refs.webformSidebar.$emit('insertWidgetCtrl', this.getTdWidget(val.getAttribute('UUID')).CtrlWidget, this.widgetKey)
+            }
           } else {
             this.$refs.webformSidebar.$emit('insertWidgetCtrl', '', this.widgetKey)
           }
@@ -413,8 +437,7 @@ export default {
   },
   computed: {
     ...mapGetters([
-      'widgets',
-      'currentElList',
+      'tdWidget',
       'currenttd',
       'getTdWidget'
     ])
@@ -424,6 +447,35 @@ export default {
 <style lang="scss">
   .content-sed {
     border: 1px double #1e88e5 !important;
+  }
+  .fr-view table td {
+    table {
+      margin: rem(-2);
+      min-width: calc(100% + 0.3rem);
+      tr {
+        td:first-child {
+          /*border-left: 0 none transparent;*/
+          padding-left: rem(2);
+        }
+        td:last-child {
+          /*border-right: 0 none transparent;*/
+          padding-right: rem(2);
+        }
+      }
+      tr:first-child{
+        td {
+          padding-top: rem(2);
+          /*border-top: 0 none transparent;*/
+        }
+      }
+      tr:last-child{
+        td {
+          padding-bottom: rem(2);
+          /*border-bottom: 0 none transparent;*/
+        }
+      }
+      /*background-color: #1e88e5;*/
+    }
   }
   .fr-wrapper {
     & > div[style^="z-index"] {
@@ -436,6 +488,7 @@ export default {
   }
   .fr-box.fr-basic .fr-element {
     padding: rem(30);
+    font-size: rem(14);
   }
   .webform-wrapper {
     .webform-header {

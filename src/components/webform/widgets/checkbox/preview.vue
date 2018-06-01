@@ -1,7 +1,7 @@
 <template>
     <!--<el-checkbox-group v-model="checkListVal">-->
-  <previewTemplate>
-    <el-checkbox v-for="(item, key) in allData.checkList" :key="key" :disabled="item.disabled" v-model="item.checkedStatus" :label="item.val" >
+  <previewTemplate class="p-l-xs">
+    <el-checkbox v-for="(item, key) in allData.checkList" :key="key" :disabled="item.disabled" v-model="item.checked" :label="item.val" :class="{ vertical: allData.isVertical }" @change="verifyFn">
       {{item.label}}
     </el-checkbox>
   </previewTemplate>
@@ -21,24 +21,31 @@ export default {
           disabled: false,
           label: '选项一',
           val: 'xiang',
-          checkedStatus: false
+          checked: false
         },
         {
           disabled: false,
           label: '选项二',
           val: 'xiang2',
-          checkedStatus: false
+          checked: false
         }
       ],
       checkListVal: [],
-      minNum: 1,
-      maxNum: 2
+      minNum: 0,
+      maxNum: 2,
+      isVertical: false
     }
   },
   created () {
     console.log(this.allData)
   },
   methods: {
+    verifyFn () {
+      if (!this.allData.errorIsShow) return false
+      let checkeds = this.allData.checkList.filter(s => s.checked).length
+      let status = !(checkeds >= this.allData.minNum && checkeds <= this.allData.maxNum)
+      status && this.$message.error(`${this.allData.errorTipText}`)
+    }
   },
   watch: {
   }, // 以V-model绑定数据时使用的数据变化监测
@@ -50,6 +57,14 @@ export default {
 }
 </script>
 
-<style scoped>
-
+<style lang="scss">
+  .el-checkbox {
+    &.vertical {
+      padding: rem(5) 0;
+      display: block;
+      &+.el-checkbox {
+        margin-left: 0;
+      }
+    }
+  }
 </style>

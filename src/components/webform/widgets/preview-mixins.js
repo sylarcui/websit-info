@@ -9,7 +9,8 @@ const previewMixins = {
       errorIsShow: false,
       explainIsShow: false,
       explainText: '',
-      allData: {}
+      allData: {},
+      errorShow: false
     }
   },
   created () {

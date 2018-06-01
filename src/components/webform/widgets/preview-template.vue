@@ -1,8 +1,8 @@
 <template>
   <div class="container">
     <slot>Submit</slot>
-    <small class="text-smaller el-form-item__error" v-if="allData.errorIsShow">{{allData.errorTipText || '警告文字'}}</small>
-    <small class="text-smaller el-form-item__error" v-if="allData.explainIsShow">{{allData.explainText || '说明文字'}}</small>
+    <!--<div v-if="allData.errorShow"><small class="text-smaller el-form-item__error" v-if="allData.errorIsShow && allData.errorTipText">{{allData.errorTipText || '警告文字'}}</small></div>-->
+    <small class="text-smaller" v-if="allData.explainIsShow">{{allData.explainText || '说明文字'}}</small>
   </div>
 </template>
 
@@ -24,6 +24,8 @@ export default {
 }
 </script>
 
-<style scoped>
-
+<style lang="scss">
+  .text-smaller{
+    color: $gray;
+  }
 </style>

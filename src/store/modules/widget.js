@@ -1,5 +1,5 @@
 import Vue from 'vue'
-import _ from 'lodash'
+// import _ from 'lodash'
 const widgets = {
   state: {
     widgets: {},
@@ -8,21 +8,12 @@ const widgets = {
   },
   getters: {
     getTdWidget: state => id => state.tdWidgetList[id],
-    tdWidget: state => state.tdWidgetList[state.currenttd.getAttribute('UUID')],
+    tdWidget: state => state.currenttd && state.tdWidgetList[state.currenttd.getAttribute('UUID')],
     tdWidgetList: state => state.tdWidgetList,
     currenttd: state => state.currenttd
   },
   mutations: {
-    addTdCtrlWidgetNmae (state, {uuid, CtrlWidget}) {
-      // if (!state.tdWidgetList[tdid]) {
-      //   Vue.set(state.tdWidgetList, tdid, {})
-      //   Vue.set(state.tdWidgetList[tdid], 'CtrlWidget', CtrlWidget)
-      // } else {
-      //   Vue.set(state.tdWidgetList, tdid, {})
-      //   if (state.tdWidgetList[tdid].CtrlWidget !== CtrlWidget) {
-      //     Vue.set(state.tdWidgetList[tdid], 'CtrlWidget', CtrlWidget)
-      //   }
-      // }
+    addTdCtrlWidgetName (state, {uuid, CtrlWidget}) {
       Vue.set(state.tdWidgetList, uuid, {})
       console.log(state.tdWidgetList, uuid)
       if (!state.tdWidgetList[uuid].hasOwnProperty('CtrlWidget')) {
@@ -65,30 +56,13 @@ const widgets = {
       Vue.delete(state.tdWidgetList, tdid)
     },
     setCurrenttd (state, td) {
-      console.log(td, 'ssssssssssssssssss')
+      Vue.set(state, 'currenttd', '')
       Vue.set(state, 'currenttd', td)
     }
   },
   actions: { // 同步
     initTdNewWidgetData ({commit, state, getters, rootState}, {data}) {
-      // let _fieldNameObj = {
-      //   widgetFieldName: '1111',
-      //   widgetFieldNamePinyin: '1111'
-      // }
-      // // Object.assign(newWidget.$data, _fieldNameObj)
-      // let data = _.cloneDeep(newWidget.$data)
-      // if (!state.tdWidgetList[tdid].hasOwnProperty('data')) {
       commit('addTdData', {data})
-      // }
-      // console.log(newWidget)
-      // for (let i in data) {
-      //   console.log(i, '====>', data)
-      //   // newWidget[i] = getters.getTdWidget(tdid).data[i]
-      //   // newWidget[i].push(tdid)
-      //   Vue.set(newWidget, i, getters.tdWidget.data[i])
-      //   // console.log()
-      // }
-      // Object.assign(getters.tdWidget.data, _fieldNameObj)
     },
     updataTdWidgetData ({commit, state, getters, rootState}, {val, newWidget}) {
       let tdid = val ? val.UUID : ''
