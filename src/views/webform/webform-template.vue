@@ -371,7 +371,6 @@ export default {
   mounted: function () {
     this.$nextTick(() => {
       this.froalaRef = this.$refs.froala
-      console.log(this.froalaRef, '------------->')
       // console.log($.FroalaEditor.DefineIcon('check', { NAME: 'check-square' }))
     })
   },
@@ -383,7 +382,6 @@ export default {
     },
     selectWidget (widgetType) {
       this.widgetName = widgetType
-      console.log(this.currenttd)
       // this.currenttd.UUID = ''
       if (!this.currenttd.getAttribute('UUID')) {
         this.currenttd.setAttribute('UUID', UUID.genV4().hexFields[2])
@@ -416,7 +414,6 @@ export default {
   watch: {
     'currenttd': {
       handler: function (val, oldval) {
-        console.log('787878787', this.widgetData)
         if (val) {
           this.$refs.webformSidebar.$emit('insertWidgetCtrl', '', this.widgetKey)
           if (val && this.currenttd.getAttribute('UUID')) {
@@ -453,23 +450,23 @@ export default {
       margin: rem(-2);
       min-width: calc(100% + 0.3rem);
       tr {
-        td:first-child {
+        td:first-child,th:first-child {
           /*border-left: 0 none transparent;*/
           padding-left: rem(2);
         }
-        td:last-child {
+        td:last-child,th:last-child {
           /*border-right: 0 none transparent;*/
           padding-right: rem(2);
         }
       }
       tr:first-child{
-        td {
+        td, td {
           padding-top: rem(2);
           /*border-top: 0 none transparent;*/
         }
       }
       tr:last-child{
-        td {
+        td, td {
           padding-bottom: rem(2);
           /*border-bottom: 0 none transparent;*/
         }

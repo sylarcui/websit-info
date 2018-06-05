@@ -1,13 +1,13 @@
 <template>
     <!--<el-checkbox-group v-model="checkListVal">-->
   <previewTemplate class="p-l-xs">
-    <el-checkbox v-for="(item, key) in allData.checkList"
+    <el-radio v-for="(item, key) in allData.checkList"
                  :key="key"
                  :disabled="item.disabled"
                  v-model="item.checked"
                  :label="item.val"
                  :class="{ vertical: allData.isVertical }"
-                 @change="verifyFn">{{item.label}}</el-checkbox>
+                 @change="verifyFn">{{item.label}}</el-radio>
   </previewTemplate>
     <!--</el-checkbox-group>-->
 </template>

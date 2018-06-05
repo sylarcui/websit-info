@@ -4,3 +4,5 @@
 /*.js
 /test/unit/coverage/
 /src/lib/
+/src/views/bpmn/descriptors/
+/src/views/bpmn/provider/

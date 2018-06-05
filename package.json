@@ -16,6 +16,8 @@
   "dependencies": {
     "@fortawesome/vue-fontawesome": "^0.0.22",
     "axios": "^0.18.0",
+    "bpmn-js": "^2.1.0",
+    "bpmn-js-properties-panel": "^0.25.1",
     "element-ui": "^2.3.7",
     "jquery": "^3.3.1",
     "lodash": "^4.17.10",
@@ -29,7 +31,8 @@
     "vue-property-decorator": "^6.1.0",
     "vue-router": "^3.0.1",
     "vuex": "^3.0.1",
-    "vuex-router-sync": "^5.0.0"
+    "vuex-router-sync": "^5.0.0",
+    "xml-loader": "^1.2.1"
   },
   "devDependencies": {
     "autoprefixer": "^7.1.2",

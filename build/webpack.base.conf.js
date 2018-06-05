@@ -85,6 +85,9 @@ module.exports = {
           limit: 10000,
           name: utils.assetsPath('media/[name].[hash:7].[ext]')
         }
+      },{
+        test: /\.(xml|bpmn)(\?.*)?$/,
+        loader: 'xml-loader'
       },
       {
         test: /\.(woff2?|eot|ttf|otf)(\?.*)?$/,

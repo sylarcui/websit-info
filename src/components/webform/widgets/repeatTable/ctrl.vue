@@ -1,19 +1,17 @@
 <template>
   <ctrl-template>
-  <el-form-item label="选项设置">
+  <el-form-item label="添加列">
     <table class="check-ctrl-table">
       <tr>
-        <th width="60">名称</th>
-        <th width="60">值</th>
-        <th>默认</th>
-        <th>禁用</th>
+        <th width="40">序号</th>
+        <th width="110">列名称</th>
+        <th width="40">列宽</th>
         <th>操作</th>
       </tr>
-      <tr v-for="(item, key) in allData.checkList" :key="key">
-        <td><el-input v-model.trim="item.label"></el-input></td>
-        <td><el-input v-model.trim="item.val" @blur="verify(item.val, key)" @focus="isRepetition = false; key_ = '' " :class="{'is-error': key_ == key && isRepetition}"></el-input></td>
-        <td><el-checkbox v-model="item.checked"></el-checkbox></td>
-        <td><el-checkbox v-model="item.disabled"></el-checkbox></td>
+      <tr v-for="(item, key) in allData.tableColData" :key="key">
+        <td>{{key}}</td>
+        <td><el-input v-model="item.label" @input="changeProp($event,item)" @blur="verify(item.label, key)"></el-input></td>
+        <td><el-input v-model="item.width"></el-input></td>
         <td>
           <el-button-group>
             <el-button type="primary" icon="fal fa-long-arrow-up" @click="upRecord(key)"></el-button>
@@ -24,24 +22,6 @@
         </td>
       </tr>
     </table>
-  </el-form-item>
-  <el-form-item>
-    <el-col :span="11">
-      <el-form-item  label="最少选中">
-        <el-input-number size="mini" :min="0" :max="allData.checkList.length" v-model="allData.minNum" controls-position="right"></el-input-number>
-      </el-form-item>
-    </el-col>
-    <el-col :span="2">&nbsp;</el-col>
-    <el-col :span="11">
-      <el-form-item  label="最多选中">
-        <el-input-number size="mini" :min="allData.minNum" :max="allData.checkList.length"  v-model="allData.maxNum" controls-position="right"></el-input-number>
-      </el-form-item>
-    </el-col>
-  </el-form-item>
-  <el-form-item>
-    <el-col :span="11"><span class="el-form-item__label">是否竖版显示</span> </el-col>
-    <el-col :span="2">&nbsp;</el-col>
-    <el-col :span="11"><el-switch v-model="allData.isVertical"></el-switch></el-col>
   </el-form-item>
 </ctrl-template>
 </template>
@@ -71,35 +51,40 @@ export default {
     //   this.upDataTdDatasActions({[v]: e})
     // },
     verify (v, k) {
-      this.isRepetition = this.tdWidget.data.checkList.filter(m => m.val === v).length >= 2 || v === ''
+      this.isRepetition = this.tdWidget.data.tableColData.filter(m => m.prop === v).length >= 2 || v === ''
       this.key_ = k
       this.isRepetition && this.$message.error('值不能重复, 也不能为空')
     },
+    changeProp (e, item) {
+      let fieldNamePinyin = pinyin(e, {
+        style: pinyin.STYLE_NORMAL, // 设置拼音风格
+        heteronym: false
+      }).join('')
+      item.prop = fieldNamePinyin
+      console.log(e, item)
+    },
     upRecord (i) {
-      Utils.upRecord(this.allData.checkList, i)
+      Utils.upRecord(this.allData.tableColData, i)
     },
     downRecord (i) {
-      Utils.downRecord(this.allData.checkList, i)
+      Utils.downRecord(this.allData.tableColData, i)
     },
     addCheckeBox: function (e, k) {
-      this.allData.checkList.push(
+      this.allData.tableColData.push(
         {
-          disabled: false,
-          label: '选项一',
-          val: `${UUID.genV4().hexFields[2]}`,
-          checkedStatus: false
+          prop: UUID.genV4().hexFields[2],
+          label: '默认',
+          width: '180'
         }
       )
+      // this.$set(this.allData.tableData[0], k, '')
     },
     delCheckeBox: function (e, val) {
-      this.allData.checkList.map((m, index) => {
+      this.allData.tableColData.map((m, index) => {
         if (m === val) {
-          this.allData.checkList.splice(index, 1)
+          this.allData.tableColData.splice(index, 1)
         }
       })
-      if (this.allData.maxNum > this.allData.checkList.length) {
-        this.allData.maxNum = this.allData.checkList.length
-      }
     },
     add () {
       console.log(this.tdWidget)
@@ -127,24 +112,26 @@ export default {
       'currenttd',
       'tdWidget',
       'tdWidgetList'
-    ]),
-    _widgetFieldNamePinyin: {
-      get: function () {
-        let fieldNamePinyin = pinyin(this.allData.widgetFieldName, {
-          style: pinyin.STYLE_NORMAL, // 设置拼音风格
-          heteronym: false
-        }).join('')
-        /* eslint-disable */
-        this.allData.widgetFieldNamePinyin = fieldNamePinyin
-        return fieldNamePinyin
-      },
-      set: function (v) {
-        v = v.replace(/[^\w\.\/]/ig,'')
-        this.allData.widgetFieldNamePinyin = v
-      }
-    }
+    ])
   },
   watch: {
+    'allData.tableColData': {
+      handler: function (val, oldval) {
+        console.log(val.map(v => v.prop))
+        console.log(val)
+        let _obj = {}
+        val.forEach((v) => {
+          console.log(v.prop)
+          this.$set(_obj, v.prop, 'sss')
+        })
+        this.$set(this.allData.tableData, 0, _obj)
+        this.$set(this.allData.tableData, 1, _obj)
+        console.log(this)
+        // this.tableData.tableData[0] =
+        // this.$set('this.tableData.tableData')
+      },
+      deep: true // 对象内部的属性监听，也叫深度监听
+    }
   },
   components: {
     ctrlTemplate

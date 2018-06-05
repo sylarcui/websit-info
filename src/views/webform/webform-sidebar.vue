@@ -1,14 +1,14 @@
 <template>
   <el-aside width="300px"  class="webform-aside">
-    <el-tabs v-model="webformAside" type="card">
-      <el-tab-pane name="first">
+    <el-tabs v-model="webformAside" type="card" @tab-click="clickTab">
+      <el-tab-pane name="widgetSet" >
         <span slot="label"><icon :icon="['fal','wrench']"></icon> 控件属性</span>
         <transition name="el-fade-in-linear">
           <component :is="currentView"></component>
         </transition>
         <!--<div ref="widgetCtrl" id="aaa"><div></div></div>-->
       </el-tab-pane>
-      <el-tab-pane name="second">
+      <el-tab-pane name="widgetList">
         <span slot="label"><icon :icon="['fal','tasks']"></icon> 控件列表</span>
         <ul class="widget-list">
           <li v-for="(item, key) in tdWidgetList" :key="key" class="widget-list-item" @click="selectiveWidget(item.CtrlWidget ,key)">
@@ -35,14 +35,15 @@ export default {
   props: ['froala'],
   data () {
     return {
-      webformAside: 'first',
+      webformAside: 'widgetSet',
       widgetLists: {},
       currentView: '',
       widgetData
     }
   },
   created () {
-    // this.widgetLists = widgetsl
+    console.log(this.widgetLists)
+    this.widgetLists = widgetsl
     // console.log(this.widgetLists, 'widgetListswidgetLists')
   },
   mounted () {
@@ -61,13 +62,17 @@ export default {
         } else {
           this.currentView = ''
         }
-        console.log(val, '======>')
         // this.updataTdWidgetData({val, newWidget: this})
       },
       deep: true // 对象内部的属性监听，也叫深度监听
     }
   },
   methods: {
+    clickTab (e) {
+      // console.log(e.name === 'widgetSet')
+      // this.setCurrenttd(_td[0])
+      // this.initWidgetCtrl(widgetName, k)
+    },
     selectiveWidget (widgetName, k) {
       let _td = $(this.froala.$el).find(`[uuid = ${k}]`)
       $(this.froala.$el).find('.content-sed').removeClass('content-sed')
@@ -77,7 +82,6 @@ export default {
     },
     initWidgetCtrl (widgetName, position) {
       this.currentView = ''
-      console.log(widgetName, position)
       if (this.getTdWidget(position)) {
         this.currentView = widgetName
       }
