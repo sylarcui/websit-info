@@ -1,37 +1,163 @@
 <template>
   <el-container>
     <el-header>
-      wwww
+      <ul class="buttons">
+      <li>下载</li>
+      <li>
+        <a ref="saveDiagram" href="javascript:;" title="download BPMN diagram">BPMN diagram</a>
+      </li>
+      <li>
+        <a ref="saveSvg" href="javascript:;" title="download as SVG image">SVG image</a>
+      </li>
+    </ul>
+      <el-button class="save" type="primary" @click="save" :disabled="!xmlStr">新增保存</el-button>
     </el-header>
     <el-main class="bpmn-views">
-      ssss
+      <div class="containers" ref="content">
+        <div class="canvas" ref="canvas"></div>
+        <div id="js-properties-panel" class="panel"></div>
+      </div>
     </el-main>
   </el-container>
 </template>
 
 <script>
-import jsPlumb from 'jsplumb'
-import 'jsplumb/css/jsplumbtoolkit-defaults.css'
+// 引入获取服务器上的图的API接口
+// import {getBpmnXml} from '../../api/modeler'
+import BpmnModeler from 'bpmn-js/lib/Modeler'
+import propertiesPanelModule from 'bpmn-js-properties-panel'
+import propertiesProviderModule from 'bpmn-js-properties-panel/lib/provider/camunda'
+import camundaModdleDescriptor from 'camunda-bpmn-moddle/resources/camunda'
+
+// const BpmnModeler = require('bpmn-js/lib/Modeler')
+// const propertiesPanelModule = require('bpmn-js-properties-panel')
+// let propertiesProviderModule = require('bpmn-js-properties-panel/lib/provider/camunda')
+// let camundaModdleDescriptor = require('camunda-bpmn-moddle/resources/camunda')
 export default {
   data () {
     return {
+      id: null,
+      bpmnModeler: null,
+      container: null,
+      canvas: null,
+      xmlStr: null,
+      processName: ''
     }
   },
   methods: {
+    createNewDiagram () {
+      // 定义空的图的模型，这里我们根据用户输入，利用字符串的拼接，定义了这个流程图的名字，不需要的就把字符串的拼接去掉。
+      // 把 <bpmn2:process id=\"Process_1\" name=\"" + this.processName + "\" isExecutable=\"false\"> 改成 <bpmn2:process id=\"Process_1\" isExecutable=\"false\"> 就好
+      const newDiagramXML = '<?xml version="1.0" encoding="UTF-8"?>\r\n<bpmn2:definitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:bpmn2="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xsi:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd" id="sample-diagram" targetNamespace="http://bpmn.io/schema/bpmn">\r\n  <bpmn2:process id="Process_1" name="' + this.processName + '" isExecutable="false">\r\n    <bpmn2:startEvent id="StartEvent_1"/>\r\n  </bpmn2:process>\r\n  <bpmndi:BPMNDiagram id="BPMNDiagram_1">\r\n    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Process_1">\r\n      <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="StartEvent_1">\r\n        <dc:Bounds height="36.0" width="36.0" x="412.0" y="240.0"/>\r\n      </bpmndi:BPMNShape>\r\n    </bpmndi:BPMNPlane>\r\n  </bpmndi:BPMNDiagram>\r\n</bpmn2:definitions>'
+      this.bpmnModeler.importXML(newDiagramXML, function (err) {
+        if (err) {
+          console.error(err)
+        }
+      })
+    },
+
+    // 下载为SVG格式,done是个函数，调用的时候传入的
+    saveSVG (done) {
+      // 把传入的done再传给bpmn原型的saveSVG函数调用
+      this.bpmnModeler.saveSVG(done)
+    },
+    // 下载为SVG格式,done是个函数，调用的时候传入的
+    saveDiagram (done) {
+      // 把传入的done再传给bpmn原型的saveXML函数调用
+      this.bpmnModeler.saveXML({ format: true }, function (err, xml) {
+        done(err, xml)
+      })
+    },
+    // 当图发生改变的时候会调用这个函数，这个data就是图的xml
+    setEncoded (link, name, data) {
+      // 把xml转换为URI，下载要用到的
+      var encodedData = encodeURIComponent(data)
+      // 获取到图的xml，保存就是把这个xml提交给后台
+      this.xmlStr = data
+      // 下载图的具体操作,改变a的属性，className令a标签可点击，href令能下载，download是下载的文件的名字
+      if (data) {
+        link.className = 'active'
+        link.href = 'data:application/bpmn20-xml;charset=UTF-8,' + encodedData
+        link.download = name
+      } else {
+      }
+    },
+
+    // 保存修改操作
+    save () {
+      // console.log(res)
+      console.log(this.xmlStr)
+      // 传给后台的参数
+
+      // 调用API接口
+      // let params = {
+      //   id: this.id,
+      //   bpmnXml: this.xmlStr
+      // }
+      // saveBpmnData(params).then(res => {
+      //   //          console.log(res)
+      //   //          console.log(this.xmlStr)
+      // })
+    },
+
+    // 从用户输入获取流程名称
+    getProcessName () {
+      this.$prompt('请输入流程名称', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消创建'
+      }).then(({ value }) => {
+        if (value === '') {
+          this.$message({
+            type: 'error',
+            message: '流程名字不能为空'
+          })
+          this.getProcessName()
+        } else {
+          this.processName = value
+          this.createNewDiagram()
+        }
+      }).catch(() => {
+        // this.back()
+      })
+    }
   },
   mounted () {
-    console.log(jsPlumb)
-    jsPlumb.jsPlumb.getInstance({
-      PaintStyle: {
-        strokeWidth: 6,
-        stroke: '#567567',
-        outlineStroke: 'black',
-        outlineWidth: 1
+    this.container = this.$refs.content
+    let canvas = this.$refs.canvas
+
+    this.bpmnModeler = new BpmnModeler({
+      container: canvas,
+      // 添加控制板
+      propertiesPanel: {
+        parent: '#js-properties-panel'
       },
-      Connector: [ 'Bezier', { curviness: 30 } ],
-      Endpoint: [ 'Dot', { radius: 5 } ],
-      EndpointStyle: { fill: '#567567' },
-      Anchor: [ 0.5, 0.5, 1, 1 ]
+      additionalModules: [
+        propertiesPanelModule,
+        propertiesProviderModule
+      ],
+      moddleExtensions: {
+        camunda: camundaModdleDescriptor
+      }
+    })
+    console.log(this.bpmnModeler)
+    // 获取到用户输入的流程名称
+    this.getProcessName()
+
+    // 下载画图
+    let _this = this
+    // 获取a标签dom节点
+    var downloadLink = this.$refs.saveDiagram
+    var downloadSvgLink = this.$refs.saveSvg
+    // 给图绑定事件，当图有发生改变就会触发这个事件
+    this.bpmnModeler.on('commandStack.changed', function (e) {
+      console.log(e)
+      _this.saveSVG(function (err, svg) {
+        _this.setEncoded(downloadSvgLink, 'diagram.svg', err ? null : svg)
+      })
+
+      _this.saveDiagram(function (err, xml) {
+        _this.setEncoded(downloadLink, 'diagram.bpmn', err ? null : xml)
+      })
     })
   }
 }

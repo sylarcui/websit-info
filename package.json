@@ -18,8 +18,11 @@
     "axios": "^0.18.0",
     "bpmn-js": "^2.1.0",
     "bpmn-js-properties-panel": "^0.25.1",
+    "camunda-bpmn-moddle": "^3.0.0",
+    "diagram-js": "^2.2.0",
     "element-ui": "^2.3.7",
     "jquery": "^3.3.1",
+    "jsplumb": "^2.7.4",
     "lodash": "^4.17.10",
     "normalize.css": "^8.0.0",
     "pinyin": "^2.8.3",
@@ -31,10 +34,10 @@
     "vue-property-decorator": "^6.1.0",
     "vue-router": "^3.0.1",
     "vuex": "^3.0.1",
-    "vuex-router-sync": "^5.0.0",
-    "xml-loader": "^1.2.1"
+    "vuex-router-sync": "^5.0.0"
   },
   "devDependencies": {
+    "xml-loader": "^1.2.1",
     "autoprefixer": "^7.1.2",
     "babel-core": "^6.22.1",
     "babel-eslint": "^8.2.1",
